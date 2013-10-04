@@ -1,0 +1,8 @@
+views
+
+
+HTML template Peter
+viewing video Jingyu
+searching for video Kristen
+admin interface (add/edit video) PETER
+user permission model (user authentication)  JOHN
