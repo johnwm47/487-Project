@@ -2,18 +2,18 @@ from django.db import models
 
 # Create your models here.
 class Video(models.Model):
-        title = models.CharField(max=100)
-        uploader = models.ForeignKey(?)
+        title = models.CharField(max_length=100)
+        #uploader = models.ForeignKey(Video)
         description = models.TextField()
         uploadDate = models.DateField()
-        viewCount = models.PositiveIntegerField
-        url = URLField
+        viewCount = models.PositiveIntegerField()
+        url = models.URLField()
 #        authors = 
 #        keywords = 
 #        journal = 
 #        year = 
 #        edition = 
-        video = models.FileField()
+        #video = models.FileField()
 # comments
 # flags
 # ratings
