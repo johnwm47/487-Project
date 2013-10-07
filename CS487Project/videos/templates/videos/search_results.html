@@ -1,0 +1,13 @@
+<html>
+<head>
+        <title>Search Results</title>
+</head>
+<body>
+<form action="{% url 'videos:search' %}" method="get" >
+        <input type="text" name="query" value="{{ query }}" >
+        <input type="submit" value="Search" >
+</form>
+<p>Showing search results for {{ query }}</p>
+<p>...but there are no actual search results here yet, though.</p>
+</body>
+</html>
