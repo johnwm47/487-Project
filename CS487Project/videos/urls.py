@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, url
-from django.views import generic
-from videos.models import Video
+from videos import views
 
 urlpatterns = patterns('',
-                url(r'^view/(?P<pk>\d+)/$', generic.DetailView.as_view(template_name="videos/view.html", model=Video), name='view'),
+                url(r'^$', views.IndexView.as_view(), name='index'),
+                url(r'^view/(?P<pk>\d+)/$', views.VideoView.as_view(), name='view'),
 #                url(r'^search/<query>/$', , name='search'),
 )

@@ -1,6 +1,9 @@
 from django.db import models
 
 # Create your models here.
+class Author(models.Model):
+        name = models.CharField(max_length=50)
+
 class Video(models.Model):
         title = models.CharField(max_length=100)
         #uploader = models.ForeignKey(Video)
@@ -8,7 +11,7 @@ class Video(models.Model):
         uploadDate = models.DateField()
         viewCount = models.PositiveIntegerField()
         url = models.URLField()
-#        authors = 
+        authors = models.ForeignKey(Author)
 #        keywords = 
 #        journal = 
 #        year = 
@@ -18,3 +21,4 @@ class Video(models.Model):
 # flags
 # ratings
 # related videos
+
