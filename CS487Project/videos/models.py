@@ -18,7 +18,7 @@ class Keyword(models.Model):
 class Journal(models.Model):
         name = models.CharField(max_length=100)
         year = models.PositiveIntegerField()
-        edition = models.CharField(max_length=30) # I don't know enough about journals to know this
+        edition = models.PositiveIntegerField()
 
         def __unicode__(self):
                 return "%s %s %s" % (self.name, self.year, self.edition)
