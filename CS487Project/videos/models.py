@@ -33,7 +33,7 @@ class Video(models.Model):
         authors = models.ManyToManyField(Author)
         keywords = models.ManyToManyField(Keyword)
         journal = models.ForeignKey(Journal)
-        #video = models.FileField()
+        video = models.FileField(upload_to='videos/')
 
         def __unicode__(self):
                 return self.title
