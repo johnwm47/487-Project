@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
@@ -24,3 +25,7 @@ def searchResult(request):
                 return render(request, 'videos/search_results.html', {'query': q})
         else:
                 return render(request, 'videos/search.html')
+
+@login_required
+def videoUpload(request):
+        return 'Placeholder'
