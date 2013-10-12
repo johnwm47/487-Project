@@ -1,11 +1,13 @@
-Implement a search algorithm- keyword, title, and journal - views.py: Kristen
-HTML5 video tag incompatability layer, upload in mp4, convert to ogg - templates/videos/view.htm, ??: Jingyu+John
-Preview frame/thumbnail - ??: Jingyu+John
-Uploader interface: Kristen
-        Nice the keyword/author interface - views.py?, admin.py, models.py?
-        Uploader authentication/authorization: Peter+Kristen
-Login screen: Peter
-Uploader user reference - models.py: Peter
-Fix the video naming - models.py: Peter
-HTML/CSS - templates/videos/*.html, static/*.css, settings.py, media/*.png: Peter
-Nice the admin interface - admin.py - optional: Not now
+(_) Implement a search algorithm- keyword, title, and journal - views.py: Kristen
+(_) HTML5 video tag incompatability layer, upload in mp4, convert to ogg - templates/videos/view.htm, ??: Jingyu+John
+(_) Preview frame/thumbnail - ??: Jingyu+John
+(_) Uploader interface: Kristen
+        (_) Nice the keyword/author interface - views.py?, admin.py, models.py?
+        (_) Uploader authentication/authorization: Peter+Kristen
+(_) Login screen: Peter
+(x) Uploader user reference - models.py: Peter
+(_) Fix the video naming - models.py: Peter
+(_) HTML/CSS - templates/videos/*.html, static/*.css, settings.py, media/*.png: Peter
+( ) Nice the admin interface - admin.py - optional: Not now
+
+When done, mark with (x)
