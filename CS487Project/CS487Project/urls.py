@@ -1,4 +1,4 @@
-from CS487Project import views
+#from CS487Project import views
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 
@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^videos/', include('videos.urls', namespace="videos")),
-    url(r'^accounts/login/', views.login, name='login'),
+    #url(r'^accounts/login/', views.login, name='login'),
 )
 
 if settings.DEBUG:

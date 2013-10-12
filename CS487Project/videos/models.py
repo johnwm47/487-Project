@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 import datetime
 
@@ -25,7 +26,7 @@ class Journal(models.Model):
 
 class Video(models.Model):
         title = models.CharField(max_length=100, unique=True)
-        #uploader = models.ForeignKey(Video)
+        uploader = models.ForeignKey(User)
         description = models.TextField()
         uploadDate = models.DateField(default=datetime.datetime.now(), editable=False)
         viewCount = models.PositiveIntegerField(default=0)
