@@ -18,6 +18,13 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^videos/', include('videos.urls', namespace="videos")),
+    url(r'^accounts/login/', 'django.contrib.auth.views.login'),
+    url(r'^accounts/logout/', 'django.contrib.auth.views.logout'),
+
+    url(r'^accounts/password_change/', 'django.contrib.auth.views.password_change'),
+    url(r'^accounts/password_change_done/', 'django.contrib.auth.views.password_change_done'),
+
+    #url(r'^accounts/', include('django.contrib.auth.urls', namespace="accounts"))
     #url(r'^accounts/login/', views.login, name='login'),
 )
 
