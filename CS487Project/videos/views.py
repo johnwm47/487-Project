@@ -13,6 +13,10 @@ class VideoView(generic.DetailView):
         template_name = 'videos/view.html'
         model = Video
 
+class UploaderView(generic.TemplateView):
+	template_name = 'videos/upload.html'
+	model = Video
+
 def videoCount(request, pk):
         video = get_object_or_404(Video, pk=pk)
         video.viewCount += 1
