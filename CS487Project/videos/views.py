@@ -34,9 +34,9 @@ def searchResult(request):
 			print query
 			print type(Video.keywords)
 			if results is None:
-				results = Video.objects.filter(keywords=query)
+				results = Video.objects.filter(keywords__keyword=query)
 			else:
-				results = results | Video.objects.filter(keywords=query)
+				results = results | Video.objects.filter(keywords__keyword=query)
 		sresults = results.order_by(Count('keywords'))
                 return render(request, 'videos/search_results.html', {'query': q})
         else:
