@@ -41,7 +41,7 @@ def searchResult(request):
 				results = Video.objects.filter(keywords__keyword=query)
 			else:
 				results = results | Video.objects.filter(keywords__keyword=query)
-		sresults = results.order_by(Count('keywords'))
+		sresults = results.annotate(matches=Count('keywords')).order_by('-matches')
                 return render(request, 'videos/search_results.html', {'query': q})
         else:
                 return render(request, 'videos/search.html')
