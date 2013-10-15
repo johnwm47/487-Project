@@ -37,7 +37,6 @@ def searchResult(request):
 		results = None
 		for query in qlist:
 			print query
-			print type(Video.keywords)
 			if results is None:
 				results = Video.objects.filter(keywords__keyword=query)
 			else:
