@@ -1,7 +1,14 @@
-{% if user.is_authenticated %}
-        <p>{{ user.username }}</p>
-{% endif %}
+{% extends "videos/master.html" %}
 
-{% for video in video_list %}
-        <p><a href="{% url 'videos:view' video.id %}">{{ video.title }}</a></p>
-{% endfor %}
+{% block page_title %}Videos{% endblock %}
+
+{% block title %}Videos{% endblock %}
+{% block content %}
+        {% if user.is_authenticated %}
+                <p>{{ user.username }}</p>
+        {% endif %}
+        
+        {% for video in video_list %}
+                <p><a href="{% url 'videos:view' video.id %}">{{ video.title }}</a></p>
+        {% endfor %}
+{% endblock %}

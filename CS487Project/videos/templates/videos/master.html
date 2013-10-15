@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{% block page_title %}{% endblock %}</title>
+
+<link rel="/static/style.css" type="text/css" >
+<meta name="description" content="{% block description %}{% endblock %}">
+<meta name="keywords" content="{% block keywords %}{% endblock %}">
+<meta name="author" content="{% block author %}{% endblock %}">
+<meta charset="UTF-8">
+</head>
+<body>
+<h1 class="title">{% block title %}{% endblock %}</h1>
+{% block content %}
+{% endblock %}
+</body>
+</html>

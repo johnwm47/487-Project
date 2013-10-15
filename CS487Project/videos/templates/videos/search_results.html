@@ -1,17 +1,16 @@
-<html>
-<head>
-        <title>Search Results</title>
-</head>
-<body>
+{% extends "videos/master.html" %}
+
+{% block page_title %}{{ query }} - search{% endblock %}
+
+{% block content %}
 <form action="{% url 'videos:search' %}" method="get" >
         <input type="text" name="query" value="{{ query }}" >
         <input type="submit" value="Search" >
 </form>
 <p>Showing search results for "{{ query }}"</p>
 <ul>
-  {% for result in results %}
-  <li><a href={% url 'videos.views.VideoView' result.video %}>{{ result }}</a></li>
-  {% endfor %}
+      {% for result in results %}
+      <li><a href={% url 'videos:view' result.id %}>{{ result }}</a></li>
+      {% endfor %}
 </ul>
-</body>
-</html>
+{% endblock %}

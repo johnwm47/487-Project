@@ -1,11 +1,10 @@
-<html>
-<head>
-        <title>Search</title>
-</head>
-<body>
+{% extends "videos/master.html" %}
+
+{% block page_title %}Search{% endblock %}
+
+{% block content %}
 <form action="{% url 'videos:search' %}" method="get">
         <input type="text" name="query" autofocus="autofocus" >
         <input type="submit" value="Search" >
 </form>
-</body>
-</html>
+{% endblock %}

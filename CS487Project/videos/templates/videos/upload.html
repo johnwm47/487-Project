@@ -1,8 +1,9 @@
-<html>
-<head>
-  <title>Uploader</title>
-</head>
-<body>
+{% extends "videos/master.html" %}
+
+{% block page_title %}Upload{% endblock %}
+
+{% block title %}Upload a video{% endblock %}
+{% block content %}
 <form action="no idea what to put here" method="get">
   Upload file: <input type="file" name="video"><br>
   Title: <input type="text" name="title"><br>
@@ -11,3 +12,4 @@
   Keywords: <input type="text" name="keywords"><br>
   <input type="submit" name="Submit">
 </form>
+{% endblock %}
