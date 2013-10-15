@@ -4,7 +4,7 @@
 (_) Uploader interface: Kristen
         (_) Nice the keyword/author interface - views.py?, admin.py, models.py?
         (_) Uploader authentication/authorization: Peter+Kristen
-(_) Login screen: Peter
+(x) Login screen: Peter
 (x) Uploader user reference - models.py: Peter
 (_) Fix the video naming - models.py: Peter
 (_) HTML/CSS - templates/videos/*.html, static/*.css, settings.py, media/*.png: Peter
