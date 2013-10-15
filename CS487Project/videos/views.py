@@ -15,10 +15,6 @@ class VideoView(generic.DetailView):
         template_name = 'videos/view.html'
         model = Video
 
-@permission_required('videos.add_video')
-def uploaderView(request):
-        return render(request, 'videos/upload.html')
-
 class UploaderView(generic.TemplateView):
 	template_name = 'videos/upload.html'
 	model = Video
