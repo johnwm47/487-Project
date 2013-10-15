@@ -9,8 +9,9 @@
 </form>
 <p>Showing search results for "{{ query }}"</p>
 <ul>
-  <li>Testvid</li>
-  <li>Testvid 2</li>
+  {% for result in results %}
+  <li><a href={% url 'videos.views.VideoView' result.video %}>{{ result }}</a></li>
+  {% endfor %}
 </ul>
 </body>
 </html>
