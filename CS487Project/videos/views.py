@@ -1,6 +1,7 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import generic
 from videos.models import Video
 from django.db.models import Count
@@ -17,6 +18,10 @@ class VideoView(generic.DetailView):
 class UploaderView(generic.TemplateView):
 	template_name = 'videos/upload.html'
 	model = Video
+
+        @method_decorator(permission_required('videos.add_video'))
+        def dispatch(self, *args, **kwargs):
+                return super(UploaderView, self).dispatch(*args, **kwargs)
 
 def videoCount(request, pk):
         video = get_object_or_404(Video, pk=pk)
@@ -41,7 +46,3 @@ def searchResult(request):
                 return render(request, 'videos/search_results.html', {'query': q})
         else:
                 return render(request, 'videos/search.html')
-
-@login_required
-def videoUpload(request):
-        return 'Placeholder'
