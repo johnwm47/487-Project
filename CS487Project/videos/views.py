@@ -75,4 +75,4 @@ def uploadFile(request):
 			return HttpResponseRedirect('/success/url/')
 	else:
 		form = VideoUploadForm()
-	return render_to_response('upload.html', {'form': form})
+	return render(request, 'videos/upload.html', {'form': form})
