@@ -9,7 +9,7 @@ div#nav {
         text-align: center;
 }
 
-div#nav a, div#nav div, div#nav span {
+div#nav a, div#nav div, div#nav span, div#nav a:visited {
         content: block;
         float: left;
         padding: 0px 10px;
@@ -22,10 +22,10 @@ div#nav a, div#nav div, div#nav span {
         background-color: blue;
 }
 
-div#nav a:visited {
+/*div#nav a:visited {
         background-color: black;
         color: white;
-}
+}*/
 
 div#nav a:hover, div#nav span {
         background-color: white;
