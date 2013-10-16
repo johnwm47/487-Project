@@ -46,6 +46,4 @@ def searchResult(request):
                 return render(request, 'videos/search_results.html', {'query': q, 'results': sresults} )
         else:
                 return render(request, 'videos/search.html')
-
-def uploadFile(request):
 	
