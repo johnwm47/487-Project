@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
 from videos.models import Video
 from django.db.models import Count
 from django.forms import ModelForm
+from django.template import RequestContext
 import string
 import re
 import datetime
@@ -75,4 +76,4 @@ def uploadFile(request):
 			return HttpResponseRedirect('/success/url/')
 	else:
 		form = VideoUploadForm()
-	return render(request, 'videos/upload.html', {'form': form})
+	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))
