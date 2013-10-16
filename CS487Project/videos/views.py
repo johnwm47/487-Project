@@ -42,17 +42,18 @@ def searchResult(request):
 				results = results | Video.objects.filter(keywords__keyword=query)
 		sresults = results.annotate(matches=Count('keywords')).order_by('-matches')
 		if 'jquery' in request.GET and request.GET['jquery']:
-			sresults = sresults.filter(journal__name=jquery)
+			sresults = sresults.filter(journal__name=request.GET['jquery'])
 		if 'aquery' in request.GET and request.GET['aquery']:
-			sresults = sresults.filter(authors__name=aquery)
+			sresults = sresults.filter(authors__name=request.GET['aquery'])
                 return render(request, 'videos/search_results.html', {'query': q, 'results': sresults} )
 	elif 'jquery' in request.GET and request.GET['jquery']:
-		results = Video.objects.filter(journal__name=jquery)
+		results = Video.objects.filter(journal__name=request.GET['jquery'])
 		if 'aquery' in request.GET and request.GET['aquery']:
-			results = results.filter(authors__name=aquery)
-		return render(request, 'videos/search_results.html', {'query': q, 'results': results} )
+			results = results.filter(authors__name=request.GET['aquery'])
+		return render(request, 'videos/search_results.html', {'query': '', 'results': results} )
 	elif 'aquery' in request.GET and request.GET['aquery']:
-		results = Video.objects.filter(authors__name=aquery)
+		results = Video.objects.filter(authors__name=request.GET['aquery'])
+                return render(request, 'videos/search_results.html', {'query': '', 'results': results} )
         else:
                 return render(request, 'videos/search.html')
 	
