@@ -4,7 +4,9 @@
 
 {% block content %}
 <form action="{% url 'videos:search' %}" method="get">
-        <input type="text" name="query" autofocus="autofocus" >
+        Keywords: <input type="text" name="query" autofocus="autofocus" ><br>
+	Author: <input type="text" name="aquery"><br>
+	Journal: <input type="text" name="jquery"><br>
         <input type="submit" value="Search" >
 </form>
 {% endblock %}
