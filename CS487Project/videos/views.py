@@ -33,7 +33,6 @@ def searchResult(request):
         if 'query' in request.GET and request.GET['query']:
                 q = request.GET['query']
 		qlist = unicode.split(q)
-		print qlist
 		results = None
 		for query in qlist:
 			print query
@@ -42,10 +41,28 @@ def searchResult(request):
 			else:
 				results = results | Video.objects.filter(keywords__keyword=query)
 		sresults = results.annotate(matches=Count('keywords')).order_by('-matches')
-		print sresults
+		if 'jquery' in request.GET and request.GET['jquery']:
+			sresults = sresults.filter(journal__name=jquery)
+		if 'aquery' in request.GET and request.GET['aquery']:
+			sresults = sresults.filter(authors__name=aquery)
                 return render(request, 'videos/search_results.html', {'query': q, 'results': sresults} )
+	elif 'jquery' in request.GET and request.GET['jquery']:
+		results = Video.objects.filter(journal__name=jquery)
+		if 'aquery' in request.GET and request.GET['aquery']:
+			results = results.filter(authors__name=aquery)
+		return render(request, 'videos/search_results.html', {'query': q, 'results': results} )
+	elif 'aquery' in request.GET and request.GET['aquery']:
+		results = Video.objects.filter(authors__name=aquery)
         else:
                 return render(request, 'videos/search.html')
-
+	
+@permission_required('videos.add_video')
 def uploadFile(request):
-	return render(None)
+	if request.method == 'POST':
+		form = UploadFileForm(request.POST, request.FILES)
+		if form.is_valid():
+			handle_uploaded_file(request.FILES['file'])
+			return HttpResponseRedirect('/success/url/')
+	else:
+		form = UploadFileForm()
+	return render_to_response('upload.html', {'form': form})
