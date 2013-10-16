@@ -157,3 +157,5 @@ LOGGING = {
         },
     }
 }
+
+LOGIN_REDIRECT_URL = 'videos:index'
