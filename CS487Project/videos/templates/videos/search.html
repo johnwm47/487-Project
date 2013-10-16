@@ -3,10 +3,19 @@
 {% block page_title %}Search{% endblock %}
 
 {% block content %}
-<form action="{% url 'videos:search' %}" method="get">
-        Keywords: <input type="text" name="query" autofocus="autofocus" ><br>
-	Author: <input type="text" name="aquery"><br>
-	Journal: <input type="text" name="jquery"><br>
+<form action="{% url 'videos:search' %}" method="get" >
+        Keywords: <input type="text" name="query" value="{{ query }}" autofocus="autofocus" ><br>
+        Author: <input type="text" name="aquery" value="{{ aquery }}" ><br>
+        Journal: <input type="text" name="jquery" value="{{ jquery }}" ><br>
         <input type="submit" value="Search" >
 </form>
+
+{% if query or aquery or jquery %}
+<p>Showing search results {% if query %}for "{{ query }}" {%endif%}{% if aquery %}by "{{aquery}}" {% endif %}{% if jquery %}in "{{jquery}}"{% endif %}</p>
+<ul>
+      {% for result in results %}
+      <li><a href={% url 'videos:view' result.id %}>{{ result }}</a></li>
+      {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

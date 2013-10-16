@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="head">
-        <img src="/media/logo.png" width="400" height="180" >
+        <a href="{% url 'videos:index' %}"><img src="/media/logo.png" width="400" height="180" ></a>
         <div id="login">
         {% if user.is_authenticated %}
                 Hello {{ user.username }}<br>

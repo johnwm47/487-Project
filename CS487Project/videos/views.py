@@ -53,11 +53,9 @@ def searchResult(request):
                 context['aquery'] = request.GET['aquery']
 		results = results.filter(authors__name=request.GET['aquery'])
 
-        if context == {}:
-                return render(request, 'videos/search.html')
-        else:
+        if context != {}:
                 context['results'] = results
-                return render(request, 'videos/search_results.html', context)
+        return render(request, 'videos/search.html', context)
 	
 @permission_required('videos.add_video')
 def uploadFile(request):
