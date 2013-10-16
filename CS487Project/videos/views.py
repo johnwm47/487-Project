@@ -5,6 +5,8 @@ from django.utils.decorators import method_decorator
 from django.views import generic
 from videos.models import Video
 from django.db.models import Count
+import string
+import re
 
 # Create your views here.
 class IndexView(generic.ListView):
@@ -22,6 +24,14 @@ class UploaderView(generic.TemplateView):
         @method_decorator(permission_required('videos.add_video'))
         def dispatch(self, *args, **kwargs):
                 return super(UploaderView, self).dispatch(*args, **kwargs)
+
+class VideoUploadForm(forms.Form):
+	title = forms.CharField(max_length=100)
+	authors = forms.CharField()
+	url = forms.URLField()
+	journal = forms.CharField()
+	keywords = forms.CharField()
+	video = forms.FileField()
 
 def videoCount(request, pk):
         video = get_object_or_404(Video, pk=pk)
@@ -56,13 +66,19 @@ def searchResult(request):
         if context != {}:
                 context['results'] = results
         return render(request, 'videos/search.html', context)
-	
+
 @permission_required('videos.add_video')
 def uploadFile(request):
 	if request.method == 'POST':
 		form = UploadFileForm(request.POST, request.FILES)
 		if form.is_valid():
-			handle_uploaded_file(request.FILES['file'])
+			title = form.cleaned_data['title']
+			regex = re.compile(',')
+			authors = regex.split(form.cleaned_data['authors'])
+			journal = form.cleaned_data['journal']
+			keywords = regex.split(form.cleaned_data['keywords'])
+			url = form.cleaned_data['url']
+			video = form.cleaned_data[video]
 			return HttpResponseRedirect('/success/url/')
 	else:
 		form = UploadFileForm()
