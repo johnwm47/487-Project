@@ -30,32 +30,34 @@ def videoCount(request, pk):
         return HttpResponse(status=200)
 
 def searchResult(request):
+        results = Video.objects
+        context = {}
         if 'query' in request.GET and request.GET['query']:
                 q = request.GET['query']
+                context['query'] = q
 		qlist = unicode.split(q)
-		results = None
+		r = None
 		for query in qlist:
 			print query
-			if results is None:
-				results = Video.objects.filter(keywords__keyword=query)
+			if r is None:
+				r = results.filter(keywords__keyword=query)
 			else:
-				results = results | Video.objects.filter(keywords__keyword=query)
-		sresults = results.annotate(matches=Count('keywords')).order_by('-matches')
-		if 'jquery' in request.GET and request.GET['jquery']:
-			sresults = sresults.filter(journal__name=request.GET['jquery'])
-		if 'aquery' in request.GET and request.GET['aquery']:
-			sresults = sresults.filter(authors__name=request.GET['aquery'])
-                return render(request, 'videos/search_results.html', {'query': q, 'results': sresults} )
-	elif 'jquery' in request.GET and request.GET['jquery']:
-		results = Video.objects.filter(journal__name=request.GET['jquery'])
-		if 'aquery' in request.GET and request.GET['aquery']:
-			results = results.filter(authors__name=request.GET['aquery'])
-		return render(request, 'videos/search_results.html', {'query': '', 'results': results} )
-	elif 'aquery' in request.GET and request.GET['aquery']:
-		results = Video.objects.filter(authors__name=request.GET['aquery'])
-                return render(request, 'videos/search_results.html', {'query': '', 'results': results} )
-        else:
+				r = r | results.filter(keywords__keyword=query)
+		results = r.annotate(matches=Count('keywords')).order_by('-matches')
+
+	if 'jquery' in request.GET and request.GET['jquery']:
+                context['jquery'] = request.GET['jquery']
+		results = results.filter(journal__name=request.GET['jquery'])
+
+	if 'aquery' in request.GET and request.GET['aquery']:
+                context['aquery'] = request.GET['aquery']
+		results = results.filter(authors__name=request.GET['aquery'])
+
+        if context == {}:
                 return render(request, 'videos/search.html')
+        else:
+                context['results'] = results
+                return render(request, 'videos/search_results.html', context)
 	
 @permission_required('videos.add_video')
 def uploadFile(request):
