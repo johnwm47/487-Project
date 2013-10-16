@@ -4,10 +4,6 @@
 
 {% block title %}Videos{% endblock %}
 {% block content %}
-        {% if user.is_authenticated %}
-                <p>{{ user.username }}</p>
-        {% endif %}
-        
         {% for video in video_list %}
                 <p><a href="{% url 'videos:view' video.id %}">{{ video.title }}</a></p>
         {% endfor %}
