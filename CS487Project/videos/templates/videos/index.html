@@ -4,7 +4,9 @@
 
 {% block title %}Videos{% endblock %}
 {% block content %}
+        <ul>
         {% for video in video_list %}
-                <p><a href="{% url 'videos:view' video.id %}">{{ video.title }}</a></p>
+                <li><a href="{% url 'videos:view' video.id %}">{{ video.title }}</a></li>
         {% endfor %}
+        </li>
 {% endblock %}
