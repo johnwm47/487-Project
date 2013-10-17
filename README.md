@@ -30,3 +30,5 @@ Password: nu
 An uploader
 Username: up
 Password: up
+
+In order to use keywords, journals, and authors with video uploads, the admin must add them to the master list of the respective type, under the admin functions page.
