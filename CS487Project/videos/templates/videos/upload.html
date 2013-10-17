@@ -4,7 +4,7 @@
 
 {% block title %}Upload a video{% endblock %}
 {% block content %}
-<form action="/videos/upload_success.html" method="post">
+<form action="/videos/upload/" method="post">
 {% csrf_token %}
 {% for field in form %}
 <tr>
