@@ -1,11 +1,11 @@
 {% extends "videos/master.html" %}
 
-{% block page_title %}{{ video.title }}{% endblock %}
+{% block title %}{{ video.title }}{% endblock %}
 {% block description %}{{ video.description }}{% endblock %}
 {% block keywords %}{{ video.keywords.all|join:", " }}{% endblock %}
 {% block author %}{{ video.authors.all|join:", " }}{% endblock %}
 
-{% block title %}{{ video.title }}{% endblock %}
+{% block header %}{{ video.title }}{% endblock %}
 {% block content %}
 <p align="center">
 <video src="{{ video.video.url }}" width="960" height="720" controls="controls">

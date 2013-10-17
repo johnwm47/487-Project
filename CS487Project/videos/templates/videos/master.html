@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>{% block page_title %}{% endblock %}</title>
+<title>{% block title %}{% endblock %}</title>
 
 <link rel="stylesheet" href="/media/style.css" type="text/css" >
 <meta name="description" content="{% block description %}{% endblock %}">
 <meta name="keywords" content="{% block keywords %}{% endblock %}">
 <meta name="author" content="{% block author %}{% endblock %}">
 <meta charset="UTF-8">
+{% block head %}{% endblock %}
 </head>
 <body>
 <div id="head">
@@ -31,12 +32,15 @@
                 </div>
                 <a href="{% url 'videos:search' %}">Advanced Search</a>
                 {% if perms.videos.add_video %}
-                <a href="{% url 'videos:uploader' %}">Upload</a>
+                        <a href="{% url 'videos:uploader' %}">Upload</a>
+                {% endif %}
+                {% if user.is_superuser %}
+                        <a href="/admin/">Admin</a>
                 {% endif %}
         </div>
 </div>
 <div id="body">
-<h1 class="title">{% block title %}{% endblock %}</h1>
+<h1 class="title">{% block header %}{% endblock %}</h1>
 {% block content %}
 {% endblock %}
 </div>

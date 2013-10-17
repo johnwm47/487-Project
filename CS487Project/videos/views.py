@@ -74,6 +74,8 @@ def uploadFile(request):
 		if form.is_valid():
 			f = form.save()
 			return HttpResponseRedirect('/success/url/')
+                else:
+                        print "Failed"
 	else:
 		form = VideoUploadForm()
 	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))

@@ -1,11 +1,12 @@
 {% extends "videos/master.html" %}
 
-{% block page_title %}Upload{% endblock %}
+{% block title %}Upload{% endblock %}
 
-{% block title %}Upload a video{% endblock %}
+{% block header %}Upload a video{% endblock %}
 {% block content %}
 <form action="/videos/upload/" method="post">
 {% csrf_token %}
+{{ form.errors }}
 {% for field in form %}
 <tr>
   <td>{{ field.label_tag }}</td>
