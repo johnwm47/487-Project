@@ -20,14 +20,6 @@ class VideoView(generic.DetailView):
         template_name = 'videos/view.html'
         model = Video
 
-class UploaderView(generic.TemplateView):
-	template_name = 'videos/upload.html'
-	model = Video
-
-        @method_decorator(permission_required('videos.add_video'))
-        def dispatch(self, *args, **kwargs):
-                return super(UploaderView, self).dispatch(*args, **kwargs)
-
 class VideoUploadForm(ModelForm):
 	class Meta:
 		model = Video
@@ -72,10 +64,10 @@ def uploadFile(request):
 	if request.method == 'POST':
 		form = VideoUploadForm(request.POST, request.FILES)
 		if form.is_valid():
-			f = form.save()
-			return HttpResponseRedirect('/success/url/')
-                else:
-                        print "Failed"
+			f = form.save(commit=False)
+                        f.uploader = request.user
+                        f.save()
+			return render(request, 'videos/upload_success.html')
 	else:
 		form = VideoUploadForm()
 	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))
