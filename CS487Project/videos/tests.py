@@ -30,24 +30,144 @@ class SearchTest(TestCase):
 	def testSearchKeywordExists(self):		
 		r = self.client.get('/videos/search/?query=test')
 		self.assertEqual(r.status_code, 200)
-                print type(r.context['results'])
-                print type(Video.objects.filter(keywords__keyword='test'))
-                print type(r.context['results'][1])
-                print type(Video.objects.filter(keywords__keyword='test')[1])
-		self.assertQuerysetEqual(r.context['results'], Video.objects.filter(keywords__keyword='test'))
+#                print type(r.context['results'])
+ #               print type(Video.objects.filter(keywords__keyword='test'))
+  #              print type(r.context['results'][1])
+   #             print type(Video.objects.filter(keywords__keyword='test')[1])
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(keywords__keyword='test')))
 		
 	def testSearchKeywordDoesNotExist(self):
 		r = self.client.get('/videos/search/?query=potato')
 		self.assertEqual(r.status_code, 200)
-                print type(r.context['results'])
-                print type(Video.objects.filter(keywords__keyword='potato'))
-		self.assertQuerysetEqual(r.context['results'], Video.objects.filter(keywords__keyword='potato'))
+    #            print type(r.context['results'])
+     #           print type(Video.objects.filter(keywords__keyword='potato'))
+		self.assertEqual(list(r.context['results']), [])
 
 	def testSearchMultipleKeywords(self):
 		r = self.client.get('/videos/search/?query=test+vid')
 		self.assertEqual(r.status_code, 200)
                 res = Video.objects.filter(keywords__keyword ='test') | Video.objects.filter(keywords__keyword = 'vid')
                 sres = res.annotate(matches=Count('keywords')).order_by('-matches')
-                print type(r.context['results'])
-                print type(sres)
-		self.assertQuerysetEqual(r.context['results'], sres)
+      #          print type(r.context['results'])
+       #         print type(sres)
+		self.assertEqual(list(r.context['results']), list(sres))
+
+	def testSearchAuthor(self):
+		r = self.client.get('/videos/search/?aquery=kristen')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(authors__name='kristen')))
+
+	def testSearchAuthorDoesNotExist(self):
+		r = self.client.get('/videos/search/?aquery=steve')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchJournal(self):
+		r = self.client.get('/videos/search/?jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(journal__name='test journal')))
+
+	def testSearchJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?jquery=potato')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndJournal(self):
+		r = self.client.get('/videos/search/?query=test&aquery=&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(keywords__keyword='test').filter(journal__name='test journal')))
+
+	def testSearchKeywordAndJournalKeywordDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndJournalJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=test&aquery=&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndJournalNeitherExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndAuthor(self):
+		r = self.client.get('/videos/search/?query=test&aquery=kristen&jquery=')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(keywords__keyword='test').filter(authors__name='kristen')))
+
+	def testSearchKeywordAndAuthorKeywordDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=kristen&jquery=')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndAuthorAuthorDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=test&aquery=steve&jquery=')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchKeywordAndAuthorNeitherExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=steve&jquery=')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAuthorAndJournal(self):
+		r = self.client.get('/videos/search/?query=&aquery=kristen&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(authors__name='kristen').filter(journal__name='test journal')))
+
+	def testSearchAuthorAndJournalAuthorDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=&aquery=steve&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAuthorAndJournalJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=&aquery=kristen&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAuthorAndJournalNeitherExist(self):
+		r = self.client.get('/videos/search/?query=&aquery=steve&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAll(self):
+		r = self.client.get('/videos/search/?query=test&aquery=kristen&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), list(Video.objects.filter(keywords__keyword='test').filter(authors__name='kristen').filter(journal__name='test journal')))
+
+	def testSearchAllKeywordDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=kristen&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllAuthorDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=test&aquery=steve&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=test&aquery=kristen&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllKeywordAndAuthorDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=steve&jquery=test+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllKeywordAndJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=kristen&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllAuthorAndJournalDoesNotExist(self):
+		r = self.client.get('/videos/search/?query=test&aquery=steve&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
+
+	def testSearchAllNoneExist(self):
+		r = self.client.get('/videos/search/?query=potato&aquery=steve&jquery=science+journal')
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(list(r.context['results']), [])
