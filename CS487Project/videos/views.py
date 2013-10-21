@@ -40,7 +40,6 @@ def searchResult(request):
 		qlist = unicode.split(q)
 		r = None
 		for query in qlist:
-			print query
 			if r is None:
 				r = results.filter(keywords__keyword=query)
 			else:
