@@ -30,17 +30,11 @@ class SearchTest(TestCase):
 	def testSearchKeywordExists(self):		
 		r = self.client.get('/videos/search/?query=test')
 		self.assertEqual(r.status_code, 200)
-#                print type(r.context['results'])
- #               print type(Video.objects.filter(keywords__keyword='test'))
-  #              print type(r.context['results'][1])
-   #             print type(Video.objects.filter(keywords__keyword='test')[1])
 		self.assertEqual(list(r.context['results']), list(Video.objects.filter(keywords__keyword='test')))
 		
 	def testSearchKeywordDoesNotExist(self):
 		r = self.client.get('/videos/search/?query=potato')
 		self.assertEqual(r.status_code, 200)
-    #            print type(r.context['results'])
-     #           print type(Video.objects.filter(keywords__keyword='potato'))
 		self.assertEqual(list(r.context['results']), [])
 
 	def testSearchMultipleKeywords(self):
@@ -48,8 +42,6 @@ class SearchTest(TestCase):
 		self.assertEqual(r.status_code, 200)
                 res = Video.objects.filter(keywords__keyword ='test') | Video.objects.filter(keywords__keyword = 'vid')
                 sres = res.annotate(matches=Count('keywords')).order_by('-matches')
-      #          print type(r.context['results'])
-       #         print type(sres)
 		self.assertEqual(list(r.context['results']), list(sres))
 
 	def testSearchAuthor(self):
