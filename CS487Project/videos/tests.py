@@ -32,8 +32,6 @@ class UploadTest(TestCase):
                 self.assertEqual(o.url, 'http://www.google.com/')
                 self.assertEqual(o.viewCount, 0)
                 self.assertEqual(o.journal, Journal.objects.get(pk=1))
-                #self.assertEqual(o.keywords.all(), [Keyword.objects.get(pk=1), Keyword.objects.get(pk=2)])
-                #self.assertEqual(o.authors.all(), [Author.objects.get(pk=1)])
 
 class SearchTest(TestCase):
 	fixtures = ['test_data.json']
@@ -174,3 +172,26 @@ class SearchTest(TestCase):
 		r = self.client.get('/videos/search/?query=potato&aquery=steve&jquery=science+journal')
 		self.assertEqual(r.status_code, 200)
 		self.assertEqual(list(r.context['results']), [])
+
+class VideoTest(TestCase):
+        fixtures = ['test_data'] # a default set of videos
+
+        def testViewVideoExists(self):
+		r = self.client.get("/videos/view/1/")
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(r.context['video'], Video.objects.get(pk=1))
+
+        def testViewVideoNotExists(self):
+		r = self.client.get("/videos/view/5/")
+		self.assertEqual(r.status_code, 404)
+
+        def testViewIncremented(self):
+		v1 = Video.objects.get(pk=1)
+		r = self.client.get("/videos/view/1/count")
+		self.assertEqual(r.status_code, 200)
+		v2 = Video.objects.get(pk=1)
+		self.assertEqual(((v1.viewCount) + 1), v2.viewCount)
+
+        def testViewNotExist(self):
+		r = self.client.get("/videos/view/5/count")
+		self.assertEqual(r.status_code, 404)
