@@ -1,6 +1,13 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+Test benchmark guidelines:
+        Force errors where they are supposed to appear
+                404
+                redirects due to lack of authorization
+        Make sure there are no 500s
+        Make sure all pages that should load load properly
+        Make sure all filters result in the correct result set
+These guidelines were chosen because they cover all of the critical aspects of the system.
+
 """
 
 from django.test import TestCase, TransactionTestCase
@@ -8,8 +15,10 @@ from models import Video, Journal, Keyword, Author
 from django.contrib.auth.models import User
 from django.db.models import Count
 
+# tests the video upload page
+# if this fails, check videos.views.uploadFile, videos/templates/videos/upload.html, videos/templates/videos/upload_success.html
 class UploadTest(TestCase):
-        fixtures = ['test_data.json'] # create user accounts
+        fixtures = ['test_data.json'] # create test videos
 
         def test_login_redirect(self):
                 # test redirect to login page for normal user
@@ -34,6 +43,8 @@ class UploadTest(TestCase):
                 self.assertEqual(o.viewCount, 0)
                 self.assertEqual(o.journal, Journal.objects.get(pk=1))
 
+# tests the search pages
+# if this fails, check videos.views.searchResult, videos/templates/videos/search.html
 class SearchTest(TestCase):
 	fixtures = ['test_data.json']
 
@@ -197,30 +208,28 @@ class VideoTest(TestCase):
 		r = self.client.get("/videos/view/5/count")
 		self.assertEqual(r.status_code, 404)
 
+# tests the registration page
+# if this fails, check CS487Project.views.register, videos/templates/registration/register.html
 class RegistrationTest(TestCase):
-    #fixtures = ['test_data.json']
-
     def test_register1(self):
         request = self.client.post('/accounts/register/', {'username': 'test1', 'email': 'test1@hawk.iit.edu', 'password1': '123456', 'password2': '123456'})
         self.assertTrue(self.client.login(username='test1', password='123456'))
         self.assertTrue(User.objects.get(username='test1').has_perm('videos.add_video'))
-
-        r2 = self.client.get('/videos/upload/')
-        self.assertEqual(r2.status_code, 200)
 
     def test_register2(self):
         request = self.client.post('/accounts/register/', {'username': 'test2', 'email': 'test2@hawk.iit', 'password1': '123456', 'password2': '123456'})
         self.assertTrue(self.client.login(username='test2', password='123456'))
         self.assertFalse(User.objects.get(username='test2').has_perm('videos.add_video'))
 
-        r3 = self.client.get('/videos/upload/')
-        self.assertEqual(r3.status_code, 302)
-
+# tests the login page. The login view is a built-in component that has already been tested, therefore we only need to make sure that the template renders
+# if this fails, check /videos/templates/registration/login.html
 class LoginTest(TestCase):
     def test_details(self):
         response = self.client.get('/accounts/login/')
         self.assertEqual(response.status_code, 200)
 
+# tests the logout page. The logout view is a built-in component that has already been tested, therefore we only need to make sure that the template renders
+# if this fails, check /videos/templates/registration/logout.html
 class LogoutTest(TestCase):
     def test_details(self):
         response = self.client.get('/accounts/logout/')
