@@ -14,11 +14,15 @@ class VideoTest(TestCase):
 		self.assertEqual(r.status_code, 404)
 
         def testViewIncremented(self)
-		# get the video through the python api, store as variable
-                # visit "/videos/view/1/count"
-                # make sure status code correct
-                # get the video through the python api AGAIN
-                # make sure that video.viewCount has incremented
-		
+		r = self.client.get("/videos/view/1/")
+		self.assertRedirects(r, '/videos/view/1/count')
+		self.assertEqual(r.status_code, 200)
+		r2 = self.client.get("/videos/view/1/")
+        # make sure that video.viewCount has incremented
+		# not sure about that one
         def testViewNotExist(self)
-		# mirror testViewVideoNotExist, change URL
+		
+		r = self.client.get("/videos/view/5/")
+		self.assertRedirects(r, '/videos/view/5/count')
+		self.assertEqual(r.status_code, 404)
+		# is this one correct?
