@@ -1,8 +1,6 @@
 """
 This file demonstrates writing tests using the unittest module. These will pass
 when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase, TransactionTestCase
@@ -10,7 +8,7 @@ from models import Video
 from django.db.models import Count
 
 class UploadTest(TestCase):
-        #fixtures = ['initial_data.json'] # create user accounts
+        fixtures = ['test_data.json'] # create user accounts
 
         def test_login_redirect(self):
                 # test redirect to login page for normal user
@@ -23,6 +21,15 @@ class UploadTest(TestCase):
                 self.assertTrue(self.client.login(username='up', password='up'))
                 r = self.client.get('/videos/upload/')
                 self.assertEqual(r.status_code, 200)
+
+                f = open('../soccer.mp4')
+                r2 = self.client.post('/videos/upload/', {'id_title':'Test', 'id_description':'Testd', 'id_url':'www.google.com', 'id_authors':('kristen'), 'id_keywords':('test', 'vid'), 'id_journal': 1, 'id_video': f})
+                f.close()
+
+                self.assertEqual(r2.status_code, 200)
+                o = Videos.objects.get(title='Test')
+                assertEqual(o.description, 'Testd')
+                assertEqual(o.url, 'www.google.com')
 
 class SearchTest(TestCase):
 	fixtures = ['test_data.json']
