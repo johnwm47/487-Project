@@ -1,18 +1,24 @@
 from django.test import TestCase
 from Videos import Video
 
-def testViewVideoExists(self):
-		r = Videos.objects.get(pk=1)
-		self.assertEqual(r.status_code, 200)
-		self.assertEqual(list(r.context['video']), list(self.client.get(pk=1)))
-		
-def testViewVideoExists(self):
-		r = Videos.objects.get(pk=1)
-		self.assertEqual(r.status_code, 200)
-		self.assertEqual(list(r.context['video']), [])
+class VideoTest(TestCase):
+        fixtures = ['test_data'] # a default set of videos
 
-def testViewIncremented(self)
-		r = 
+        def testViewVideoExists(self):
+		r = self.client.get("/videos/view/1/")
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(r.context['video'], Videos.objects.get(pk=1) # the list() part is only needed for a queryset. These are individual objects, therefore it is unnecessary). This is comparing the video that is rendered in the template with the video in the database, retrieved through the Python API
 		
-def testViewNotIncremented(self)
-		r = 
+        def testViewVideoNotExists(self):
+		r = self.client.get("/videos/view/5/")
+		self.assertEqual(r.status_code, 404)
+
+        def testViewIncremented(self)
+		# get the video through the python api, store as variable
+                # visit "/videos/view/1/count"
+                # make sure status code correct
+                # get the video through the python api AGAIN
+                # make sure that video.viewCount has incremented
+		
+        def testViewNotExist(self)
+		# mirror testViewVideoNotExist, change URL
