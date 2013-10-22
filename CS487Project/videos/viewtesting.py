@@ -14,16 +14,16 @@ class VideoTest(TestCase):
 		self.assertEqual(r.status_code, 404)
 
         def testViewIncremented(self)
-		r = self.client.get("/videos/view/1/count/")
-		self.assertRedirects(r, '/videos/view/1/count/')
+		v1 = Videos.objects.get(pk=1)
+		r = self.client.get("/videos/view/1/count")
 		self.assertEqual(r.status_code, 200)
-		r2 = self.client.get("/videos/view/1/count/")
-        # make sure that video.viewCount has incremented
-		# not sure about that one
-		
-        def testViewNotExist(self)
-		
-		r = self.client.get("/videos/view/5/")
-		self.assertRedirects(r, '/videos/view/5/count')
-		self.assertEqual(r.status_code, 404)
-		# is this one correct?
+		v2 = Videos.objects.get(pk=1)
+		self.assertEqual(((v1.viewCount) + 1), v2.viewCount)
+
+
+		def testViewNotExist(self)
+		v1 = Videos.objects.get(pk=5)
+		r = self.client.get("/videos/view/5/count")
+		self.assertEqual(r.status_code, 200)
+		v2 = Videos.objects.get(pk=5)
+		self.assertEqual(((v1.viewCount) + 1), v2.viewCount)
