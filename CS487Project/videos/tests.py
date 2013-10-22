@@ -4,7 +4,7 @@ when you run "manage.py test".
 """
 
 from django.test import TestCase, TransactionTestCase
-from models import Video
+from models import Video, Journal, Keyword, Author
 from django.db.models import Count
 
 class UploadTest(TestCase):
@@ -23,13 +23,17 @@ class UploadTest(TestCase):
                 self.assertEqual(r.status_code, 200)
 
                 f = open('../soccer.mp4')
-                r2 = self.client.post('/videos/upload/', {'id_title':'Test', 'id_description':'Testd', 'id_url':'www.google.com', 'id_authors':('kristen'), 'id_keywords':('test', 'vid'), 'id_journal': 1, 'id_video': f})
+                r2 = self.client.post('/videos/upload/', {'title':'Test', 'description':'Testd', 'url':'www.google.com', 'authors':(1), 'keywords':(1, 2), 'journal': 1, 'video': f})
                 f.close()
 
-                self.assertEqual(r2.status_code, 200)
-                o = Videos.objects.get(title='Test')
-                assertEqual(o.description, 'Testd')
-                assertEqual(o.url, 'www.google.com')
+                self.assertEqual(r2.templates[0].name, 'videos/upload_success.html')
+                o = Video.objects.get(title='Test')
+                self.assertEqual(o.description, 'Testd')
+                self.assertEqual(o.url, 'http://www.google.com/')
+                self.assertEqual(o.viewCount, 0)
+                self.assertEqual(o.journal, Journal.objects.get(pk=1))
+                #self.assertEqual(o.keywords.all(), [Keyword.objects.get(pk=1), Keyword.objects.get(pk=2)])
+                #self.assertEqual(o.authors.all(), [Author.objects.get(pk=1)])
 
 class SearchTest(TestCase):
 	fixtures = ['test_data.json']
