@@ -5,6 +5,7 @@ when you run "manage.py test".
 
 from django.test import TestCase, TransactionTestCase
 from models import Video, Journal, Keyword, Author
+from django.contrib.auth.models import User
 from django.db.models import Count
 
 class UploadTest(TestCase):
@@ -195,3 +196,32 @@ class VideoTest(TestCase):
         def testViewNotExist(self):
 		r = self.client.get("/videos/view/5/count")
 		self.assertEqual(r.status_code, 404)
+
+class RegistrationTest(TestCase):
+    #fixtures = ['test_data.json']
+
+    def test_register1(self):
+        request = self.client.post('/accounts/register/', {'username': 'test1', 'email': 'test1@hawk.iit.edu', 'password1': '123456', 'password2': '123456'})
+        self.assertTrue(self.client.login(username='test1', password='123456'))
+        self.assertTrue(User.objects.get(username='test1').has_perm('videos.add_video'))
+
+        r2 = self.client.get('/videos/upload/')
+        self.assertEqual(r2.status_code, 200)
+
+    def test_register2(self):
+        request = self.client.post('/accounts/register/', {'username': 'test2', 'email': 'test2@hawk.iit', 'password1': '123456', 'password2': '123456'})
+        self.assertTrue(self.client.login(username='test2', password='123456'))
+        self.assertFalse(User.objects.get(username='test2').has_perm('videos.add_video'))
+
+        r3 = self.client.get('/videos/upload/')
+        self.assertEqual(r3.status_code, 302)
+
+class LoginTest(TestCase):
+    def test_details(self):
+        response = self.client.get('/accounts/login/')
+        self.assertEqual(response.status_code, 200)
+
+class LogoutTest(TestCase):
+    def test_details(self):
+        response = self.client.get('/accounts/logout/')
+        self.assertEqual(response.status_code, 200)
