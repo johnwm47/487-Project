@@ -1,5 +1,5 @@
 from django.test import TestCase
-from Videos import Video
+from videos.models import Video
 
 class VideoTest(TestCase):
         fixtures = ['test_data'] # a default set of videos
@@ -14,12 +14,13 @@ class VideoTest(TestCase):
 		self.assertEqual(r.status_code, 404)
 
         def testViewIncremented(self)
-		r = self.client.get("/videos/view/1/")
-		self.assertRedirects(r, '/videos/view/1/count')
+		r = self.client.get("/videos/view/1/count/")
+		self.assertRedirects(r, '/videos/view/1/count/')
 		self.assertEqual(r.status_code, 200)
-		r2 = self.client.get("/videos/view/1/")
+		r2 = self.client.get("/videos/view/1/count/")
         # make sure that video.viewCount has incremented
 		# not sure about that one
+		
         def testViewNotExist(self)
 		
 		r = self.client.get("/videos/view/5/")
