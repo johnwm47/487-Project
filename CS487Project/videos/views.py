@@ -3,10 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
-from videos.models import Video
+from models import Video
 from django.db.models import Count
-from django.forms import ModelForm
 from django.template import RequestContext
+from forms import VideoUploadForm
 import string
 import re
 import datetime
@@ -19,11 +19,6 @@ class IndexView(generic.ListView):
 class VideoView(generic.DetailView):
         template_name = 'videos/view.html'
         model = Video
-
-class VideoUploadForm(ModelForm):
-	class Meta:
-		model = Video
-		fields = ('title', 'description', 'url', 'authors', 'keywords', 'journal', 'video')
 
 def videoCount(request, pk):
         video = get_object_or_404(Video, pk=pk)

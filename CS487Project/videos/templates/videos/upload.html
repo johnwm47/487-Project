@@ -9,14 +9,9 @@
 
 {% csrf_token %}
 {{ form.errors }}
-{% for field in form %}
-<tr>
-  <td>{{ field.label_tag }}</td>
-  <br>
-  <td>{{ field }}</td>
-  <br><br>
-</tr>
-{% endfor %}
+<table>
+        {{ form }}
 <input type="submit" value="Submit" />
+</table>
 </form>
 {% endblock %}

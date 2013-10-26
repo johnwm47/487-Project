@@ -6,13 +6,12 @@ from time import strftime
 # Create your models here.
 class Author(models.Model):
         name = models.CharField(max_length=50)
-        email = models.EmailField()
 
         def __unicode__(self):
                 return self.name
 
 class Keyword(models.Model):
-        keyword = models.CharField(max_length=100, unique=True)
+        keyword = models.CharField(max_length=100, primary_key=True)
 
         def __unicode__(self):
                 return self.keyword
