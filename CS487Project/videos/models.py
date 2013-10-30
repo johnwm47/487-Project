@@ -24,6 +24,22 @@ class Journal(models.Model):
         def __unicode__(self):
                 return "%s %s %s" % (self.name, self.year, self.edition)
 
+class CommentSet(models.Model):
+        pass
+
+class Comment(models.Model):
+        commenter = models.ForeignKey(User)
+        cset = models.ForeignKey(CommentSet)
+        parent = models.ForeignKey('self', related_name='replies', null=True, blank=True)
+        content = models.TextField()
+
+class FlagSet(models.Model):
+        pass
+
+class Flag(models.Model):
+        flagger = models.ForeignKey(User)
+        description = models.TextField()
+
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
@@ -40,11 +56,11 @@ class Video(models.Model):
         keywords = models.ManyToManyField(Keyword)
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
+        comments = models.OneToOneField(CommentSet)
+        flags = models.OneToOneField(FlagSet)
 
         def __unicode__(self):
                 return self.title
 
-# comments
-# flags
 # ratings
 # related videos
