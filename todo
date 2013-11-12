@@ -1,0 +1,36 @@
+Flags
+        Refine Model (_)
+        Write View (_)
+        Alter view template (_)
+        Admin (_)
+Comments
+        Refine Model (_)
+        Write View (_)
+        Alter view template (_)
+        Blocking (_)
+        Admin (_)
+        Uploader editing (_)
+Ratings
+        Write View (_)
+        Create Model (_)
+        Alter view template (_)
+Videos
+        Generate thumbnails (_)
+        Blocking (_)
+        Uploader editing of video (_)
+        Refine model - revisit original requirements (_)
+        handle deletion of old video files/come up with better naming scheme (_)
+        Check the file input by the user - not virus, correct type, etc (_)
+Search
+        User preferences - past views (_)
+User
+        Store views according to user account (_)
+        Rewrite home page to take advantage of user views (_)
+General
+        "Access Denied" page (_)
+
+------------------------------------------------------------
+Enhance view calculation - such as % video watched (_)
+Setup mail support (_)
+Search by title, description (_)
+Create admin tools to combine keywords, journals, and authors (_)
