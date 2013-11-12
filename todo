@@ -1,36 +1,37 @@
 Flags
-        Refine Model (_)
-        Write View (_)
-        Alter view template (_)
-        Admin (_)
+        (_) Refine Model
+        (_) Write View
+        (_) Alter view template
+        (_) Admin
 Comments
-        Refine Model (_)
-        Write View (_)
-        Alter view template (_)
-        Blocking (_)
-        Admin (_)
-        Uploader editing (_)
+        (_) Refine Model
+        (_) Write View
+        (_) Alter view template
+        (_) Blocking
+        (_) Admin
+        (_) Uploader editing
 Ratings
-        Write View (_)
-        Create Model (_)
-        Alter view template (_)
+        (_) Write View
+        (_) Create Model
+        (_) Alter view template
 Videos
-        Generate thumbnails (_)
-        Blocking (_)
-        Uploader editing of video (_)
-        Refine model - revisit original requirements (_)
-        handle deletion of old video files/come up with better naming scheme (_)
-        Check the file input by the user - not virus, correct type, etc (_)
+        (_) Generate thumbnails
+        (_) Blocking
+        (_) Uploader editing of video
+        (_) Refine model - revisit original requirements
+        (_) handle deletion of old video files/come up with better naming scheme
+        (_) Check the file input by the user - not virus, correct type, etc
 Search
-        User preferences - past views (_)
+        (_) User preferences - past views
 User
-        Store views according to user account (_)
-        Rewrite home page to take advantage of user views (_)
+        (_) Store views according to user account
+        (_) Rewrite home page to take advantage of user views
 General
-        "Access Denied" page (_)
+        (_) "Access Denied" page
 
 ------------------------------------------------------------
-Enhance view calculation - such as % video watched (_)
-Setup mail support (_)
-Search by title, description (_)
-Create admin tools to combine keywords, journals, and authors (_)
+(_) Enhance view calculation - such as % video watched
+(_) Setup mail support
+(_) Search by title, description
+(_) General search by all types
+(_) Create admin tools to combine keywords, journals, and authors
