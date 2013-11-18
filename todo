@@ -15,7 +15,7 @@ Ratings
         (_) Create Model
         (_) Alter view template
 Videos
-        (_) Generate thumbnails
+        (X) Generate thumbnails		JOHN
         (_) Blocking
         (_) Uploader editing of video
         (_) Refine model - revisit original requirements
@@ -30,7 +30,7 @@ General
         (_) "Access Denied" page
 
 ------------------------------------------------------------
-(_) Enhance view calculation - such as % video watched
+(X) Enhance view calculation - such as % video watched		JOHN
 (_) Setup mail support
 (_) Search by title, description
 (_) General search by all types
