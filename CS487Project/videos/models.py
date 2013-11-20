@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 import datetime
 from time import strftime
+from django.contrib import admin
 
 class Flag(models.Model):
         flagger = models.ForeignKey(User)
@@ -34,10 +35,13 @@ class Comment(models.Model):
         content = models.TextField()
         flags = models.ManyToManyField(Flag, related_name='')
 
+        def __unicode__(self):
+                return self.content
+
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
-        return strftime(instance.title + "-%y-%m-%d-%H-%M-%s.mp4")
+        return strftime(instance.title + "%y,%m,%d,%H,%M,%S.mp4")
 
 class Video(models.Model):
         title = models.CharField(max_length=100, unique=True)
@@ -58,3 +62,4 @@ class Video(models.Model):
 
 # ratings
 # related videos
+admin.site.register(Comment)
