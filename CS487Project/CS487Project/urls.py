@@ -25,7 +25,8 @@ urlpatterns = patterns('',
     url(r'^accounts/password_change/', 'django.contrib.auth.views.password_change'),
     url(r'^accounts/password_change_done/', 'django.contrib.auth.views.password_change_done'),
     url(r'accounts/register/', views.register),
-
+    url(r'^contact/$', views.contact),
+    url(r'^accounts/contact/thanks/$', views.thanks),
 )
 
 if settings.DEBUG:
