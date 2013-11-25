@@ -8,6 +8,9 @@ class Flag(models.Model):
         flagger = models.ForeignKey(User)
         description = models.TextField()
 
+        def __unicode__(self):
+            return self.description
+
 # Create your models here.
 class Author(models.Model):
         name = models.CharField(max_length=50)
@@ -74,8 +77,8 @@ class Video(models.Model):
         keywords = models.ManyToManyField(Keyword)
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
-        replies = models.ManyToManyField(Comment, related_name='')
-        flags = models.ManyToManyField(Flag, related_name='')
+        replies = models.ManyToManyField(Comment, related_name='', blank=True)
+        flags = models.ManyToManyField(Flag, related_name='', blank=True)
 
         def __unicode__(self):
                 return self.title

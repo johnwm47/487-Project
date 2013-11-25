@@ -12,6 +12,10 @@
 Your browser does not support the video tag.
 </video>
 </p>
+{% if perms.add_flag %}
+<a id="flag" href="{% url 'videos:flag' "video"  video.id %}" target="_blank">Flag this video</a>
+{% endif %}
+
 <p>{{ video.description }}</p>
 <p>Viewed {{ video.viewCount }} times.</p>
 <p>Original article: <a href="{{ video.url }}" target="_blank">{{ video.url }}</a></p>

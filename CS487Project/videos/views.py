@@ -3,10 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
-from models import Video
+from models import Video, Flag
 from django.db.models import Count
 from django.template import RequestContext
-from forms import VideoUploadForm
+from forms import VideoUploadForm, FlagCreationForm
 import string
 import re
 import datetime
@@ -52,6 +52,29 @@ def searchResult(request):
         if context != {}:
                 context['results'] = results
         return render(request, 'videos/search.html', context)
+
+@permission_required('videos.add_flag')
+def createFlag(request, t, pk):
+    if t == 'video':
+        o = Video
+    elif t == 'comment':
+        o = Comment
+    else:
+        raise Http404
+        
+    obj = get_object_or_404(Video, pk=pk)
+    if request.method == 'POST':
+        form = FlagCreationForm(request.POST)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.flagger = request.user
+            f.save()
+            obj.flags.add(f)
+            obj.save()
+            return render(request, 'flag/flag_success.html')
+    else:
+        form = FlagCreationForm()
+    return render_to_response('flag/leave_flag.html', {'form': form, 't': t, 'pk': pk}, context_instance=RequestContext(request))
 
 @permission_required('videos.add_video')
 def uploadFile(request):

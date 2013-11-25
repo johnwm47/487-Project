@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput
-from models import Video, Comment
+from models import Video, Comment, Flag
 
 class VideoUploadForm(ModelForm):
 	class Meta:
@@ -8,6 +8,11 @@ class VideoUploadForm(ModelForm):
                 widgets = {
                         #'keywords': TextInput
                 }
+
+class FlagCreationForm(ModelForm):
+    class Meta:
+        model = Flag
+        fields = ('description', )
 
 class LeaveCommentForm(ModelForm):
         class Meta:
