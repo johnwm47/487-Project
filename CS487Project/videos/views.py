@@ -3,10 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
-from models import Video, Flag
+from models import Video, Flag, Comment
 from django.db.models import Count
 from django.template import RequestContext
-from forms import VideoUploadForm, FlagCreationForm
+from forms import VideoUploadForm, FlagCommentForm, FlagVideoForm
 import string
 import re
 import datetime
@@ -53,28 +53,35 @@ def searchResult(request):
                 context['results'] = results
         return render(request, 'videos/search.html', context)
 
-@permission_required('videos.add_flag')
-def createFlag(request, t, pk):
-    if t == 'video':
-        o = Video
-    elif t == 'comment':
-        o = Comment
-    else:
-        raise Http404
-        
+@permission_required('videos.add_videoflag')
+def createVideoFlag(request, pk):
     obj = get_object_or_404(Video, pk=pk)
     if request.method == 'POST':
-        form = FlagCreationForm(request.POST)
+        form = FlagVideoForm(request.POST)
         if form.is_valid():
             f = form.save(commit=False)
             f.flagger = request.user
+            f.video = obj
             f.save()
-            obj.flags.add(f)
-            obj.save()
             return render(request, 'flag/flag_success.html')
     else:
         form = FlagCreationForm()
-    return render_to_response('flag/leave_flag.html', {'form': form, 't': t, 'pk': pk}, context_instance=RequestContext(request))
+    return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
+
+@permission_required('videos.add_commentflag')
+def createCommentFlag(request, pk):
+    obj = get_object_or_404(Comment, pk=pk)
+    if request.method == 'POST':
+        form = FlagCommentForm(request.POST)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.flagger = request.user
+            f.comment = obj
+            f.save()
+            return render(request, 'flag/flag_success.html')
+    else:
+        form = FlagCreationForm()
+    return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
 @permission_required('videos.add_video')
 def uploadFile(request):

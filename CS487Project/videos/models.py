@@ -4,13 +4,6 @@ import datetime
 from time import strftime
 from django.contrib import admin
 
-class Flag(models.Model):
-        flagger = models.ForeignKey(User)
-        description = models.TextField()
-
-        def __unicode__(self):
-            return self.description
-
 # Create your models here.
 class Author(models.Model):
         name = models.CharField(max_length=50)
@@ -34,9 +27,8 @@ class Journal(models.Model):
 
 class Comment(models.Model):
         commenter = models.ForeignKey(User)
-        replies = models.ManyToManyField('self', related_name='')
+        replies = models.ManyToManyField('self', related_name='', blank=True)
         content = models.TextField()
-        flags = models.ManyToManyField(Flag, related_name='')
 
         def __unicode__(self):
                 return "%s %s %s" % (self.commenter, self.video, self.content)
@@ -78,10 +70,25 @@ class Video(models.Model):
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
         replies = models.ManyToManyField(Comment, related_name='', blank=True)
-        flags = models.ManyToManyField(Flag, related_name='', blank=True)
 
         def __unicode__(self):
                 return self.title
+
+class Flag(models.Model):
+        flagger = models.ForeignKey(User, editable=False)
+        description = models.TextField()
+        
+        class Meta:
+            abstract = True
+
+        def __unicode__(self):
+            return self.description
+
+class FlagVideo(Flag):
+        video = models.ForeignKey(Video, editable=False)
+
+class FlagComment(Flag):
+        comment = models.ForeignKey(Comment, editable=False)
 
 # ratings
 # related videos
