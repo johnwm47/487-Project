@@ -12,6 +12,24 @@
 Your browser does not support the video tag.
 </video>
 </p>
+{% if perms.add_rating %}
+<form method="post" action="{% url 'videos:createRating' video.id 'star' %}" target="_blank">
+        {% csrf_token %}
+        <table>
+                {{ star }}
+                <tr><td><input type="submit" value="Submit" /></td></tr>
+        </table>
+</form>
+
+<form method="post" action="{% url 'videos:createRating' video.id 'beaker' %}" target="_blank">
+        {% csrf_token %}
+        <table>
+                {{ beaker }}
+                <tr><td><input type="submit" value="Submit" /></td></tr>
+        </table>
+</form>
+{% endif %}
+
 {% if perms.add_flag %}
 <a id="flag" href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>
 {% endif %}

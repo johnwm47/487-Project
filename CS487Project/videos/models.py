@@ -33,26 +33,6 @@ class Comment(models.Model):
         def __unicode__(self):
                 return "%s %s %s" % (self.commenter, self.video, self.content)
 
-class Rating(models.Model):
-        ratinger = models.ForeignKey(User)
-        ONESTAR = 1
-        TWOSTARS = 2
-        THREESTARS = 3
-        FOURSTARS = 4
-        FIVESTARS = 5
-        RATING_CHOICES = (
-                (ONESTAR, 'ONESTAR'),
-                (TWOSTARS, 'TWOSTARS'),
-                (THREESTARS, 'THREESTARS'),
-                (FOURSTARS, 'FOURSTARS'),
-                (FIVESTARS, 'FIVESTARS'),
-        )
-        rating = models.PositiveIntegerField(choices=RATING_CHOICES,
-                                             default=THREESTARS)
-
-        def __unicode__(self):
-                return "%s %s %s" % (self.ratinger, self.video, self.rating)
-        
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
@@ -73,6 +53,28 @@ class Video(models.Model):
 
         def __unicode__(self):
                 return self.title
+
+class Rating(models.Model):
+        rater = models.ForeignKey(User)
+        rating = models.PositiveIntegerField(choices=[ (1, 'One'),
+                                                       (2, 'Two'),
+                                                       (3, 'Three'),
+                                                       (4, 'Four'),
+                                                       (5, 'Five'),
+                                                     ],
+                                             )
+
+        class Meta:
+            abstract = True
+
+        def __unicode__(self):
+                return "%s" % (self.rating)
+        
+class BeakerRating(Rating):
+        video = models.ForeignKey(Video, related_name='beakers')
+
+class StarRating(Rating):
+        video = models.ForeignKey(Video, related_name='stars')
 
 class Flag(models.Model):
         flagger = models.ForeignKey(User, editable=False)

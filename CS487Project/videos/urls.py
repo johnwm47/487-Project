@@ -9,4 +9,5 @@ urlpatterns = patterns('',
                 url(r'^upload/$', views.uploadFile, name="uploader"),
                 url(r'^video/(?P<pk>\d+)/flag$', views.createVideoFlag, name="flagVideo"),
                 url(r'^comment/(?P<pk>\d+)/flag$', views.createCommentFlag, name="flagComment"),
+                url(r'^video/(?P<pk>\d+)/rating/(?P<t>\w+)/$', views.createRating, name="createRating")
 )

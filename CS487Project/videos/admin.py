@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.core import urlresolvers
-from videos.models import Video, Author, Journal, Keyword, FlagVideo, FlagComment
+from videos.models import *
 from django.utils.safestring import mark_safe
 
 class VideoAdmin(admin.ModelAdmin):
@@ -51,3 +51,5 @@ admin.site.register(Journal)
 admin.site.register(Keyword, KeywordAdmin)
 admin.site.register(FlagVideo, FlagVideoAdmin)
 admin.site.register(FlagComment, FlagCommentAdmin)
+admin.site.register(StarRating)
+admin.site.register(BeakerRating)

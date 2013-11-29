@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput
-from models import Video, Comment, FlagVideo, FlagComment
+from models import *
 
 class VideoUploadForm(ModelForm):
 	class Meta:
@@ -23,3 +23,13 @@ class LeaveCommentForm(ModelForm):
     class Meta:
         model = Comment
         fields = ('content', )
+
+class BeakerRatingForm(ModelForm):
+    class Meta:
+        model = BeakerRating
+        fields = ('rating',)
+
+class StarRatingForm(ModelForm):
+    class Meta:
+        model = StarRating
+        fields = ('rating',)
