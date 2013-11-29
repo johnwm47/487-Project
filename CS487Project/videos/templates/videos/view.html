@@ -20,7 +20,11 @@ Your browser does not support the video tag.
                 <tr><td><input type="submit" value="Submit" /></td></tr>
         </table>
 </form>
+{% endif %}
 
+<p>Average stars: {{ star_avg }}</p>
+
+{% if perms.add_rating %}
 <form method="post" action="{% url 'videos:createRating' video.id 'beaker' %}" target="_blank">
         {% csrf_token %}
         <table>
@@ -29,6 +33,8 @@ Your browser does not support the video tag.
         </table>
 </form>
 {% endif %}
+
+<p>Average beakers: {{ beaker_avg }}</p>
 
 {% if perms.add_flag %}
 <a id="flag" href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>

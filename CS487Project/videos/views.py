@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
 from models import Video, Flag, Comment
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.template import RequestContext
 from forms import *
 import string
@@ -39,6 +39,9 @@ class VideoView(generic.DetailView):
 
             context['star'] = StarRatingForm(instance=star)
             context['beaker'] = BeakerRatingForm(instance=beaker)
+
+            context['star_avg'] = self.object.stars.aggregate(Avg('rating'))['rating__avg']
+            context['beaker_avg'] = self.object.beakers.aggregate(Avg('rating'))['rating__avg']
 
             return context
 
