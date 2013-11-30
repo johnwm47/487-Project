@@ -7,6 +7,13 @@
 
 {% block header %}{{ video.title }}{% endblock %}
 {% block content %}
+
+{% if perms.modify_video or video.uploader == user %}
+
+<a href="{% url 'videos:editVideo' video.id %}">edit</a>
+
+{% endif %}
+
 <p align="center">
 <video src="{{ video.video.url }}" width="960" height="720" controls="controls">
 Your browser does not support the video tag.

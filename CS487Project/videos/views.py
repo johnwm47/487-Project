@@ -1,12 +1,15 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.utils.decorators import method_decorator
 from django.views import generic
 from models import *
 from django.db.models import Count, Avg
 from django.template import RequestContext
+from django.utils.http import urlencode
 from forms import *
 import string
 import re
@@ -57,6 +60,23 @@ class ViewVideo(generic.DetailView):
             context['beaker_avg'] = self.object.beakers.aggregate(Avg('rating'))['rating__avg']
 
             return context
+
+class EditVideo(generic.UpdateView):
+        template_name = 'videos/edit.html'
+        model = Video
+
+        def get_success_url(self):
+            return reverse('videos:view', args=(self.object.id,))
+
+        def get_queryset(self, **kwargs):
+            return super(EditVideo, self).get_queryset(**kwargs).filter(block=None)
+
+        def get_object(self, **kwargs):
+            video = super(EditVideo, self).get_object(**kwargs)
+            if self.request.user.has_perm('videos.change_video') or self.request.user == video.uploader:
+                return video
+            else:
+                raise PermissionDenied()
 
 def videoCount(request, pk):
         video = getVideo(pk)
