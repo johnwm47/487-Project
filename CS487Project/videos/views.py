@@ -48,6 +48,13 @@ class VideoView(generic.DetailView):
 def videoCount(request, pk):
         video = get_object_or_404(Video, pk=pk)
         video.viewCount += 1
+        if request.user.is_authenticated():
+            try:
+                vv = video.user_views.get(user=request.user)
+                vv.count += 1
+                vv.save()
+            except ObjectDoesNotExist:
+                video.user_views.add(VideoView(user=request.user, count=1))
         video.save()
         return HttpResponse(status=200)
 

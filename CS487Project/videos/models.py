@@ -92,6 +92,14 @@ class FlagVideo(Flag):
 class FlagComment(Flag):
         comment = models.ForeignKey(Comment, editable=False)
 
-# ratings
-# related videos
+class View(models.Model):
+        user = models.ForeignKey(User)
+        count = models.PositiveIntegerField(default=0)
+
+        class Meta:
+            abstract = True
+
+class VideoView(View):
+        video = models.ForeignKey(Video, related_name='user_views')
+
 admin.site.register(Comment)
