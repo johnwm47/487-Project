@@ -91,6 +91,11 @@ def videoCount(request, pk):
         video.save()
         return HttpResponse(status=200)
 
+def getRelatedVideos(request):
+	u = request.user
+	related = BeakerRating.objects.filter(rater = u).filter(rating__in=[4, 5]) | StarRating.objects.filter(rater = u).filter(rating__in=[4, 5])
+	return related
+
 def searchResult(request):
         results = Video.objects.filter(block=None)
         context = {}
@@ -104,7 +109,12 @@ def searchResult(request):
 				r = results.filter(keywords__keyword=query)
 			else:
 				r = r | results.filter(keywords__keyword=query)
-		results = r.annotate(matches=Count('keywords')).order_by('-matches')
+		relevant = getRelatedVideos(request)
+		related = relevant & r
+		results1 = related.annotate(matches=Count('keywords')).order_by('-matches')
+		unrelated = r.exclude(relevant)
+		results2 = unrelated.annotate(matches=Count('keywords')).order_by('-matches')
+		results = results1 | results2
 
 	if 'jquery' in request.GET and request.GET['jquery']:
                 context['jquery'] = request.GET['jquery']
