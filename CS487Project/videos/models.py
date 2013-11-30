@@ -4,6 +4,9 @@ import datetime
 from time import strftime
 from django.contrib import admin
 
+class Blocked(models.Model):
+        reason = models.TextField()
+
 # Create your models here.
 class Author(models.Model):
         name = models.CharField(max_length=50)
@@ -50,6 +53,7 @@ class Video(models.Model):
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
         replies = models.ManyToManyField(Comment, related_name='', blank=True)
+        block = models.OneToOneField(Blocked, related_name='', blank=True, null=True, default=None)
 
         def __unicode__(self):
                 return self.title

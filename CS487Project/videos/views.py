@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils.decorators import method_decorator
 from django.views import generic
-from models import Video, Flag, Comment
+from models import *
 from django.db.models import Count, Avg
 from django.template import RequestContext
 from forms import *
@@ -12,17 +12,30 @@ import string
 import re
 import datetime
 
+def getVideo(pk):
+        video = get_object_or_404(Video, pk=pk)
+        if not video.block == None:
+            raise Http404
+        else:
+            return video
+
 # Create your views here.
 class IndexView(generic.ListView):
         template_name = 'videos/index.html'
         model = Video
 
-class VideoView(generic.DetailView):
+        def get_queryset(self, **kwargs):
+            return super(IndexView, self).get_queryset(**kwargs).filter(block=None)
+
+class ViewVideo(generic.DetailView):
         template_name = 'videos/view.html'
         model = Video
+        
+        def get_queryset(self, **kwargs):
+            return super(ViewVideo, self).get_queryset(**kwargs).filter(block=None)
 
         def get_context_data(self, **kwargs):
-            context = super(VideoView, self).get_context_data(**kwargs)
+            context = super(ViewVideo, self).get_context_data(**kwargs)
             if self.request.user.is_authenticated() and self.request.user.has_perm('videos.add_rating'):
                 try:
                     star = self.object.stars.get(rater=self.request.user)
@@ -46,7 +59,7 @@ class VideoView(generic.DetailView):
             return context
 
 def videoCount(request, pk):
-        video = get_object_or_404(Video, pk=pk)
+        video = getVideo(pk)
         video.viewCount += 1
         if request.user.is_authenticated():
             try:
@@ -54,12 +67,12 @@ def videoCount(request, pk):
                 vv.count += 1
                 vv.save()
             except ObjectDoesNotExist:
-                video.user_views.add(VideoView(user=request.user, count=1))
+                video.user_views.add(VideoView(user=request.user, count=1, video=video))
         video.save()
         return HttpResponse(status=200)
 
 def searchResult(request):
-        results = Video.objects
+        results = Video.objects.filter(block=None)
         context = {}
         if 'query' in request.GET and request.GET['query']:
                 q = request.GET['query']
@@ -87,7 +100,7 @@ def searchResult(request):
 
 @permission_required('videos.add_rating')
 def createRating(request, pk, t):
-    obj = get_object_or_404(Video, pk=pk)
+    obj = getVideo(pk)
 
     if t == 'star':
         formType = StarRatingForm
@@ -117,7 +130,7 @@ def createRating(request, pk, t):
 
 @permission_required('videos.add_videoflag')
 def createVideoFlag(request, pk):
-    obj = get_object_or_404(Video, pk=pk)
+    obj = getVideo(pk)
     if request.method == 'POST':
         form = FlagVideoForm(request.POST)
         if form.is_valid():
@@ -132,7 +145,7 @@ def createVideoFlag(request, pk):
 
 @permission_required('videos.add_commentflag')
 def createCommentFlag(request, pk):
-    obj = get_object_or_404(Comment, pk=pk)
+    obj = getVideo(pk)
     if request.method == 'POST':
         form = FlagCommentForm(request.POST)
         if form.is_valid():
