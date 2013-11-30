@@ -118,7 +118,7 @@ def searchResult(request):
                 context['results'] = results
         return render(request, 'videos/search.html', context)
 
-@permission_required('videos.add_rating')
+@permission_required('videos.add_rating', raise_exception=True)
 def createRating(request, pk, t):
     obj = getVideo(pk)
 
@@ -148,7 +148,7 @@ def createRating(request, pk, t):
         form = formType(instance=rating)
     return render_to_response('rating/leave_rating.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
-@permission_required('videos.add_videoflag')
+@permission_required('videos.add_videoflag', raise_exception=True)
 def createVideoFlag(request, pk):
     obj = getVideo(pk)
     if request.method == 'POST':
@@ -163,7 +163,7 @@ def createVideoFlag(request, pk):
         form = FlagCreationForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
-@permission_required('videos.add_commentflag')
+@permission_required('videos.add_commentflag', raise_exception=True)
 def createCommentFlag(request, pk):
     obj = getVideo(pk)
     if request.method == 'POST':
@@ -178,7 +178,7 @@ def createCommentFlag(request, pk):
         form = FlagCreationForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
-@permission_required('videos.add_video')
+@permission_required('videos.add_video', raise_exception=True)
 def uploadFile(request):
 	if request.method == 'POST':
 		form = VideoUploadForm(request.POST, request.FILES)
