@@ -10,7 +10,7 @@
 
 {% if perms.modify_video or video.uploader == user %}
 
-<a href="{% url 'videos:editVideo' video.id %}">edit</a>
+<div id="toolbox"><a href="{% url 'videos:editVideo' video.id %}">edit</a></div>
 
 {% endif %}
 
@@ -19,33 +19,33 @@
 Your browser does not support the video tag.
 </video>
 </p>
+
+<div class="right">
 {% if perms.add_rating %}
 <form method="post" action="{% url 'videos:createRating' video.id 'star' %}" target="_blank">
         {% csrf_token %}
-        <table>
-                {{ star }}
-                <tr><td><input type="submit" value="Submit" /></td></tr>
-        </table>
+        {{ star }}
+        <input type="submit" value="Submit" />
 </form>
 {% endif %}
 
-<p>Average stars: {{ star_avg }}</p>
+Average stars: {{ star_avg }}
 
 {% if perms.add_rating %}
 <form method="post" action="{% url 'videos:createRating' video.id 'beaker' %}" target="_blank">
         {% csrf_token %}
-        <table>
-                {{ beaker }}
-                <tr><td><input type="submit" value="Submit" /></td></tr>
-        </table>
+        {{ beaker }}
+        <input type="submit" value="Submit" />
 </form>
 {% endif %}
 
-<p>Average beakers: {{ beaker_avg }}</p>
+Average beakers: {{ beaker_avg }}
 
 {% if perms.add_flag %}
-<a id="flag" href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>
+<br />
+<a href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>
 {% endif %}
+</div>
 
 <p>{{ video.description }}</p>
 <p>Viewed {{ video.viewCount }} times.</p>

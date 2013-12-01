@@ -64,6 +64,7 @@ class ViewVideo(generic.DetailView):
 class EditVideo(generic.UpdateView):
         template_name = 'videos/edit.html'
         model = Video
+        fields = ['title', 'description', 'url', 'authors', 'keywords', 'journal', 'video']
 
         def get_success_url(self):
             return reverse('videos:view', args=(self.object.id,))
