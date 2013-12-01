@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'accounts/register/', views.register),
     url(r'^contact/$', views.contact),
     url(r'^accounts/contact/thanks/$', views.thanks),
+	url(r'^comments/', include('django.contrib.comments.urls')),
 )
 
 if settings.DEBUG:
