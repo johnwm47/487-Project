@@ -95,7 +95,9 @@ def videoCount(request, pk):
 
 def getRelatedVideos(request):
 	u = request.user
-	related = BeakerRating.objects.filter(rater = u).filter(rating__in=[4, 5]) | StarRating.objects.filter(rater = u).filter(rating__in=[4, 5])
+	brelated = BeakerRating.objects.filter(rater = u).filter(rating__in=[4, 5]).values_list('video', flat=True)
+	srelated = StarRating.objects.filter(rater = u).filter(rating__in=[4, 5])
+	related = Video.objects.filter(pk__in=set(brelated)) | Video.objects.filter(pk__in=set(srelated))
 	return related
 
 def searchResult(request):
@@ -114,7 +116,10 @@ def searchResult(request):
 		relevant = getRelatedVideos(request)
 		related = relevant & r
 		results1 = related.annotate(matches=Count('keywords')).order_by('-matches')
-		unrelated = r.exclude(relevant)
+		if relevant:
+			unrelated = r.exclude(relevant)
+		else:
+			unrelated = r
 		results2 = unrelated.annotate(matches=Count('keywords')).order_by('-matches')
 		results = results1 | results2
 

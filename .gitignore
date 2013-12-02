@@ -1,0 +1,4 @@
+*.pyc
+*~
+#*
+CS487Project/videos/data.sqlite
