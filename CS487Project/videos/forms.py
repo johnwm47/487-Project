@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django.forms import ModelForm, TextInput, CharField
+from django.forms import *
 from models import *
 
 class MultiKeywordField(CharField):
@@ -52,9 +52,21 @@ class VideoUploadForm(ModelForm):
         keywords = MultiKeywordField()
         authors = MultiAuthorField(sep_char=",")
 
+        journal_name = CharField(max_length=100)
+        journal_year = IntegerField(min_value=0)
+        journal_edition = IntegerField(min_value=0)
+
+        def save(self, commit=True):
+            obj = super(VideoUploadForm, self).save(commit=False)
+            obj.journal = Journal.objects.get_or_create(name=self.cleaned_data['journal_name'], year=self.cleaned_data['journal_year'], edition=self.cleaned_data['journal_edition'])[0]
+            if commit:
+                obj.save()
+                self.save_m2m()
+            return obj                
+
 	class Meta:
 		model = Video
-		fields = ('title', 'description', 'url', 'authors', 'keywords', 'journal', 'video')
+		fields = ('title', 'description', 'url', 'authors', 'keywords', 'video')
 
 class FlagCommentForm(ModelForm):
     class Meta:
