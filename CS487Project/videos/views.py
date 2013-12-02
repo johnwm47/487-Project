@@ -64,6 +64,7 @@ class ViewVideo(generic.DetailView):
 class EditVideo(generic.UpdateView):
         template_name = 'videos/edit.html'
         model = Video
+        form_class = VideoUploadForm
         fields = ['title', 'description', 'url', 'authors', 'keywords', 'journal', 'video']
 
         def get_success_url(self):
@@ -197,6 +198,7 @@ def uploadFile(request):
 			f = form.save(commit=False)
                         f.uploader = request.user
                         f.save()
+                        form.save_m2m()
 			return render(request, 'videos/upload_success.html')
 	else:
 		form = VideoUploadForm()
