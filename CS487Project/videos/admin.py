@@ -8,12 +8,12 @@ from django.template import RequestContext
 from django.utils.safestring import mark_safe
 from django.views import generic
 
-def blockVideos(q, b=None):
+def blockQuery(q, b=None):
     q.update(block=b)
 
 def block(modeladmin, request, queryset):
     if request.POST.get("reason"):
-        blockVideos(queryset, Blocked.objects.get_or_create(reason=request.POST.get("reason"))[0])
+        blockQuery(queryset, Blocked.objects.get_or_create(reason=request.POST.get("reason"))[0])
         return None
     else:
         opts = modeladmin.model._meta
@@ -28,7 +28,7 @@ def block(modeladmin, request, queryset):
         return render_to_response('admin/block.html', context, context_instance=RequestContext(request))
 
 def unblock(modeladmin, request, queryset):
-    blockVideos(queryset)
+    blockQuery(queryset)
 
 class VideoAdmin(admin.ModelAdmin):
         actions=[block, unblock]
@@ -39,34 +39,41 @@ class VideoAdmin(admin.ModelAdmin):
         #inlines = [ FlagAdmin ]
         #exclude = [ Flag ]
 
-class VideoInline(admin.TabularInline):
-        model = Video
+#class VideoInline(admin.TabularInline):
+        #model = Video
 
 class KeywordAdmin(admin.ModelAdmin):
         list_display = ['keyword']
 
-class FlagVideoAdmin(admin.ModelAdmin):
-        readonly_fields = ['user_link', 'video_link']
-        fields = ['user_link', 'video_link', 'description']
+def resolve(modeladmin, request, queryset):
+        queryset.update(resolved=True)
+        return None
 
+def unresolve(modeladmin, request, queryset):
+        queryset.update(resolved=False)
+        return None
+
+class FlagAdmin(admin.ModelAdmin):
+        actions = [resolve, unresolve]
         def user_link(self, obj):
             change_url = urlresolvers.reverse('admin:auth_user_change', args=(obj.flagger.id,))
             return mark_safe('<a href="%s">%s</a>' % (change_url, obj.flagger.__str__()))
         user_link.short_description = 'Flagger'
+
+class FlagVideoAdmin(FlagAdmin):
+        readonly_fields = ['user_link', 'video_link']
+        fields = ['resolved', 'user_link', 'video_link', 'description']
+        list_display = ['description', 'user_link', 'video_link', 'resolved']
+        list_filter = ['flagger', 'video', 'resolved']
 
         def video_link(self, obj):
             change_url = urlresolvers.reverse('admin:videos_video_change', args=(obj.video.pk,))
             return mark_safe('<a href="%s">%s</a>' % (change_url, obj.video.__str__()))
         video_link.short_description = 'Video'
 
-class FlagCommentAdmin(admin.ModelAdmin):
+class FlagCommentAdmin(FlagAdmin):
         readonly_fields = ['user_link', 'comment_link']
-        fields = ['user_link', 'comment_link', 'description']
-
-        def user_link(self, obj):
-            change_url = urlresolvers.reverse('admin:auth_user_change', args=(obj.flagger.id,))
-            return mark_safe('<a href="%s">%s</a>' % (change_url, obj.flagger.__str__()))
-        user_link.short_description = 'Flagger'
+        fields = ['resolved', 'user_link', 'comment_link', 'description']
 
         def comment_link(self, obj):
             change_url = urlresolvers.reverse('admin:videos_comment_change', args=(obj.comment.pk,))

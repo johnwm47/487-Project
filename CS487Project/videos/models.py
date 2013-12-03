@@ -42,7 +42,7 @@ class Comment(models.Model):
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
-        return strftime(instance.title + "%y,%m,%d,%H,%M,%S.mp4")
+        return strftime(instance.title + "%y%m%d%H%M%S.mp4")
 
 class Video(models.Model):
         title = models.CharField(max_length=100, unique=True)
@@ -86,6 +86,7 @@ class StarRating(Rating):
 class Flag(models.Model):
         flagger = models.ForeignKey(User, editable=False)
         description = models.TextField()
+        resolved = models.BooleanField(default=False)
         
         class Meta:
             abstract = True

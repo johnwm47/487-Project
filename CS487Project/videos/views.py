@@ -172,7 +172,7 @@ def createVideoFlag(request, pk):
             f.save()
             return render(request, 'flag/flag_success.html')
     else:
-        form = FlagCreationForm()
+        form = FlagVideoForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
 @permission_required('videos.add_commentflag', raise_exception=True)
