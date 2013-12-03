@@ -17,3 +17,8 @@ class UserCreateForm(UserCreationForm):
                         if user.email[-4:] == '.edu':
                                 Group.objects.get(name='uploaders').user_set.add(user)
                 return user
+
+class ContactForm(forms.Form):
+        subject = forms.CharField(max_length=100)
+        email = forms.EmailField(required=False)
+        message = forms.CharField(widget=forms.Textarea)
