@@ -7,6 +7,9 @@ from django.contrib import admin
 class Blocked(models.Model):
         reason = models.TextField()
 
+        def __unicode__(self):
+            return self.reason
+
 # Create your models here.
 class Author(models.Model):
         name = models.CharField(max_length=50)
@@ -48,12 +51,12 @@ class Video(models.Model):
         uploadDate = models.DateField(default=datetime.datetime.now(), editable=False)
         viewCount = models.PositiveIntegerField(default=0)
         url = models.URLField()
-        authors = models.ManyToManyField(Author)
-        keywords = models.ManyToManyField(Keyword)
+        authors = models.ManyToManyField(Author, blank=True)
+        keywords = models.ManyToManyField(Keyword, blank=True)
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
         replies = models.ManyToManyField(Comment, related_name='', blank=True)
-        block = models.OneToOneField(Blocked, related_name='', blank=True, null=True, default=None)
+        block = models.ForeignKey(Blocked, related_name='', blank=True, null=True, default=None)
 
         def __unicode__(self):
                 return self.title

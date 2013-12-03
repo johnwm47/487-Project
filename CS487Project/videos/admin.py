@@ -1,13 +1,45 @@
 from django.contrib import admin
 from django.core import urlresolvers
+from django.core.exceptions import PermissionDenied
+from django.db import router
 from videos.models import *
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.utils.safestring import mark_safe
+from django.views import generic
+
+def blockVideos(q, b=None):
+    q.update(block=b)
+
+def block(modeladmin, request, queryset):
+    print(request.POST)
+    if request.POST.get("reason"):
+        blockVideos(queryset, Blocked.objects.get_or_create(reason=request.POST.get("reason"))[0])
+        return None
+    else:
+        opts = modeladmin.model._meta
+        app_label = opts.app_label
+
+        context = { 'title': 'Block videos',
+                    'queryset': queryset,
+                    'opts': opts,
+                    'app_label': app_label,
+                    'action_checkbox_name': admin.helpers.ACTION_CHECKBOX_NAME
+                  }
+        return render_to_response('admin/block.html', context, context_instance=RequestContext(request))
+
+def unblock(modeladmin, request, queryset):
+    blockVideos(queryset)
+
+class BlockVideos(generic.CreateView):
+    model = Blocked
 
 class VideoAdmin(admin.ModelAdmin):
+        actions=[block, unblock]
         date_hierarchy = 'uploadDate'
         filter_horizontal = ['keywords', 'authors']
         list_display = ('title', 'uploader', 'viewCount', 'url')
-        list_filter = ('uploader', 'uploadDate', 'authors', 'keywords', 'journal')
+        list_filter = ('uploader', 'uploadDate', 'authors', 'keywords', 'journal', "block")
         #inlines = [ FlagAdmin ]
         #exclude = [ Flag ]
 
