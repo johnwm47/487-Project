@@ -56,7 +56,7 @@ class Video(models.Model):
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
         replies = models.ManyToManyField(Comment, related_name='', blank=True)
-        block = models.ForeignKey(Blocked, related_name='', blank=True, null=True, default=None)
+        block = models.ForeignKey(Blocked, related_name='', blank=True, null=True, default=None, on_delete=models.SET_NULL)
 
         def __unicode__(self):
                 return self.title
