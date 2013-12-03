@@ -65,10 +65,9 @@ class EditVideo(generic.UpdateView):
         template_name = 'videos/edit.html'
         model = Video
         form_class = VideoUploadForm
-        fields = ['title', 'description', 'url', 'authors', 'keywords', 'journal', 'video']
 
         def get_success_url(self):
-            return reverse('videos:view', args=(self.object.id,))
+            return self.object.get_absolute_url()
 
         def get_queryset(self, **kwargs):
             return super(EditVideo, self).get_queryset(**kwargs).filter(block=None)
@@ -79,6 +78,20 @@ class EditVideo(generic.UpdateView):
                 return video
             else:
                 raise PermissionDenied()
+
+@permission_required('videos.add_video', raise_exception=True)
+def uploadFile(request):
+	if request.method == 'POST':
+		form = VideoUploadForm(request.POST, request.FILES)
+		if form.is_valid():
+			f = form.save(commit=False)
+                        f.uploader = request.user
+                        f.save()
+                        form.save_m2m()
+			return redirect(f)
+	else:
+		form = VideoUploadForm()
+	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))
 
 def videoCount(request, pk):
         video = getVideo(pk)
@@ -189,17 +202,3 @@ def createCommentFlag(request, pk):
     else:
         form = FlagCreationForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
-
-@permission_required('videos.add_video', raise_exception=True)
-def uploadFile(request):
-	if request.method == 'POST':
-		form = VideoUploadForm(request.POST, request.FILES)
-		if form.is_valid():
-			f = form.save(commit=False)
-                        f.uploader = request.user
-                        f.save()
-                        form.save_m2m()
-			return render(request, 'videos/upload_success.html')
-	else:
-		form = VideoUploadForm()
-	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))

@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 import datetime
 from time import strftime
 from django.contrib import admin
 
 class Blocked(models.Model):
-        reason = models.TextField()
+        reason = models.TextField(unique=True)
 
         def __unicode__(self):
             return self.reason
@@ -60,6 +61,9 @@ class Video(models.Model):
 
         def __unicode__(self):
                 return self.title
+        
+        def get_absolute_url(self):
+            return reverse('videos:view', args=(self.id,))
 
 class Rating(models.Model):
         rater = models.ForeignKey(User)

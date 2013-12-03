@@ -36,8 +36,12 @@ class VideoAdmin(admin.ModelAdmin):
         filter_horizontal = ['keywords', 'authors']
         list_display = ('title', 'uploader', 'viewCount', 'url')
         list_filter = ('uploader', 'uploadDate', 'authors', 'keywords', 'journal', "block")
+        readonly_fields = ['video_link']
         #inlines = [ FlagAdmin ]
         #exclude = [ Flag ]
+        def video_link(self, obj):
+            view_url = obj.get_absolute_url()
+            return mark_safe('<a href="%s">View the video</a>' % (view_url,))
 
 #class VideoInline(admin.TabularInline):
         #model = Video
