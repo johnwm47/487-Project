@@ -97,12 +97,10 @@ def videoCount(request, pk):
         video = getVideo(pk)
         video.viewCount += 1
         if request.user.is_authenticated():
-            try:
-                vv = video.user_views.get(user=request.user)
+            vv, created = video.user_views.get_or_create(user=request.user, defaults={'count':1, 'video':video})
+            if created:
                 vv.count += 1
                 vv.save()
-            except ObjectDoesNotExist:
-                video.user_views.add(VideoView(user=request.user, count=1, video=video))
         video.save()
         return HttpResponse(status=200)
 
