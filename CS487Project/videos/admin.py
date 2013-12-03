@@ -12,7 +12,6 @@ def blockVideos(q, b=None):
     q.update(block=b)
 
 def block(modeladmin, request, queryset):
-    print(request.POST)
     if request.POST.get("reason"):
         blockVideos(queryset, Blocked.objects.get_or_create(reason=request.POST.get("reason"))[0])
         return None
@@ -30,9 +29,6 @@ def block(modeladmin, request, queryset):
 
 def unblock(modeladmin, request, queryset):
     blockVideos(queryset)
-
-class BlockVideos(generic.CreateView):
-    model = Blocked
 
 class VideoAdmin(admin.ModelAdmin):
         actions=[block, unblock]
@@ -77,6 +73,7 @@ class FlagCommentAdmin(admin.ModelAdmin):
             return mark_safe('<a href="%s">%s</a>' % (change_url, obj.comment.__str__()))
         comment_link.short_description = 'Comment'
 
+admin.site.disable_action('delete_selected')
 admin.site.register(Video, VideoAdmin)
 admin.site.register(Author)
 admin.site.register(Journal)
