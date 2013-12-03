@@ -1,11 +1,15 @@
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 import datetime
 from time import strftime
 from django.contrib import admin
 
 class Blocked(models.Model):
-        reason = models.TextField()
+        reason = models.TextField(unique=True)
+
+        def __unicode__(self):
+            return self.reason
 
 # Create your models here.
 class Author(models.Model):
@@ -39,7 +43,7 @@ class Comment(models.Model):
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
-        return strftime(instance.title + "%y,%m,%d,%H,%M,%S.mp4")
+        return strftime(instance.title + "%y%m%d%H%M%S.mp4")
 
 class Video(models.Model):
         title = models.CharField(max_length=100, unique=True)
@@ -48,15 +52,18 @@ class Video(models.Model):
         uploadDate = models.DateField(default=datetime.datetime.now(), editable=False)
         viewCount = models.PositiveIntegerField(default=0)
         url = models.URLField()
-        authors = models.ManyToManyField(Author)
-        keywords = models.ManyToManyField(Keyword)
+        authors = models.ManyToManyField(Author, blank=True)
+        keywords = models.ManyToManyField(Keyword, blank=True)
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
         replies = models.ManyToManyField(Comment, related_name='', blank=True)
-        block = models.OneToOneField(Blocked, related_name='', blank=True, null=True, default=None)
+        block = models.ForeignKey(Blocked, related_name='', blank=True, null=True, default=None, on_delete=models.SET_NULL)
 
         def __unicode__(self):
                 return self.title
+        
+        def get_absolute_url(self):
+            return reverse('videos:view', args=(self.id,))
 
 class Rating(models.Model):
         rater = models.ForeignKey(User)
@@ -83,6 +90,7 @@ class StarRating(Rating):
 class Flag(models.Model):
         flagger = models.ForeignKey(User, editable=False)
         description = models.TextField()
+        resolved = models.BooleanField(default=False)
         
         class Meta:
             abstract = True

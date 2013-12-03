@@ -24,7 +24,7 @@ class UploadTest(TestCase):
                 # test redirect to login page for normal user
                 self.assertTrue(self.client.login(username='nu', password='nu'))
                 r = self.client.get('/videos/upload/')
-                self.assertRedirects(r, '/accounts/login/?next=/videos/upload/')
+                self.assertEqual(r.status_code, 403)
 
         def test_upload(self):
                 # test to make sure upload page works for uploader
@@ -36,8 +36,8 @@ class UploadTest(TestCase):
                 r2 = self.client.post('/videos/upload/', {'title':'Test', 'description':'Testd', 'url':'www.google.com', 'authors':(1), 'keywords':(1, 2), 'journal': 1, 'video': f})
                 f.close()
 
-                self.assertEqual(r2.templates[0].name, 'videos/upload_success.html')
                 o = Video.objects.get(title='Test')
+                self.assertRedirect(o.get_absolute_url())
                 self.assertEqual(o.description, 'Testd')
                 self.assertEqual(o.url, 'http://www.google.com/')
                 self.assertEqual(o.viewCount, 0)
@@ -203,6 +203,23 @@ class VideoTest(TestCase):
 		self.assertEqual(r.status_code, 200)
 		v2 = Video.objects.get(pk=1)
 		self.assertEqual(((v1.viewCount) + 1), v2.viewCount)
+
+        def testViewIncementedLogin(self):
+                self.client.login(username="nu", password="nu")
+                v1 = Video.objects.get(pk=1)
+                try:
+                    v1u = v1.user_views.get(user=self.client).count
+                except ObjectDoesNotExist:
+                    v1u = 0
+
+                r = self.client.get("/videos/view/1/count")
+                self.assertEqual(r.status_code, 200)
+
+                v2 = Video.objects.get(pk=1)
+                v2u = v2.user_views.get(user=self.client).count
+
+                self.assertEqual(v1.viewCount + 1, v2.viewCount)
+                self.assertEqual(v1u + 1, v2u)
 
         def testViewNotExist(self):
 		r = self.client.get("/videos/view/5/count")

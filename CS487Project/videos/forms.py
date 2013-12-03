@@ -8,7 +8,9 @@ class MultiKeywordField(CharField):
         self.sep_char = sep_char
 
     def prepare_value(self, value):
-        if value == None:
+        if isinstance(value, unicode):
+            return value
+        elif value == None:
             return ""
         elif self.sep_char == None:
             return " ".join(value)
@@ -30,7 +32,9 @@ class MultiAuthorField(CharField):
         self.sep_char = sep_char
 
     def prepare_value(self, value):
-        if value == None:
+        if isinstance(value, unicode):
+            return value
+        elif value == None:
             return ""
         else:
             l = [Author.objects.get(pk=v).__unicode__() for v in value]

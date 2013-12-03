@@ -65,10 +65,9 @@ class EditVideo(generic.UpdateView):
         template_name = 'videos/edit.html'
         model = Video
         form_class = VideoUploadForm
-        fields = ['title', 'description', 'url', 'authors', 'keywords', 'journal', 'video']
 
         def get_success_url(self):
-            return reverse('videos:view', args=(self.object.id,))
+            return self.object.get_absolute_url()
 
         def get_queryset(self, **kwargs):
             return super(EditVideo, self).get_queryset(**kwargs).filter(block=None)
@@ -80,16 +79,28 @@ class EditVideo(generic.UpdateView):
             else:
                 raise PermissionDenied()
 
+@permission_required('videos.add_video', raise_exception=True)
+def uploadFile(request):
+	if request.method == 'POST':
+		form = VideoUploadForm(request.POST, request.FILES)
+		if form.is_valid():
+			f = form.save(commit=False)
+                        f.uploader = request.user
+                        f.save()
+                        form.save_m2m()
+			return redirect(f)
+	else:
+		form = VideoUploadForm()
+	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))
+
 def videoCount(request, pk):
         video = getVideo(pk)
         video.viewCount += 1
         if request.user.is_authenticated():
-            try:
-                vv = video.user_views.get(user=request.user)
+            vv, created = video.user_views.get_or_create(user=request.user, defaults={'count':1, 'video':video})
+            if created:
                 vv.count += 1
                 vv.save()
-            except ObjectDoesNotExist:
-                video.user_views.add(VideoView(user=request.user, count=1, video=video))
         video.save()
         return HttpResponse(status=200)
 
@@ -177,7 +188,7 @@ def createVideoFlag(request, pk):
             f.save()
             return render(request, 'flag/flag_success.html')
     else:
-        form = FlagCreationForm()
+        form = FlagVideoForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
 
 @permission_required('videos.add_commentflag', raise_exception=True)
@@ -194,17 +205,3 @@ def createCommentFlag(request, pk):
     else:
         form = FlagCreationForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))
-
-@permission_required('videos.add_video', raise_exception=True)
-def uploadFile(request):
-	if request.method == 'POST':
-		form = VideoUploadForm(request.POST, request.FILES)
-		if form.is_valid():
-			f = form.save(commit=False)
-                        f.uploader = request.user
-                        f.save()
-                        form.save_m2m()
-			return render(request, 'videos/upload_success.html')
-	else:
-		form = VideoUploadForm()
-	return render_to_response('videos/upload.html', {'form': form}, context_instance=RequestContext(request))
