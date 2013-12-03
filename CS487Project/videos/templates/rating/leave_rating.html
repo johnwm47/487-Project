@@ -1,0 +1,14 @@
+{% extends "videos/master.html" %}
+
+{% block title %}Leave a Rating{% endblock %}
+
+{% block content %}
+{{ form.errors }}
+<form method="post">
+        {% csrf_token %}
+        <table>
+                {{ form }}
+                <tr><td><input type="submit" value="Submit" /></td></tr>
+        </table>
+</form>
+{% endblock %}
