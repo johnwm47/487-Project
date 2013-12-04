@@ -28,7 +28,19 @@ class IndexView(generic.ListView):
         model = Video
 
         def get_queryset(self, **kwargs):
-            return super(IndexView, self).get_queryset(**kwargs).filter(block=None)
+		allvids = super(IndexView, self).get_queryset(**kwargs).filter(block=None)
+		related = getRelatedVideos(self.request)
+		unrelated = allvids.exclude(related)
+		if related and unrelated:
+			sort = related | unrelated
+		elif related:
+			sort = related
+		elif unrelated:
+			sort = unrelated
+		else:
+			sort = allvids
+		return sort
+                #return super(IndexView, self).get_queryset(**kwargs).filter(block=None)
 
 class ViewVideo(generic.DetailView):
         template_name = 'videos/view.html'
