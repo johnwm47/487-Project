@@ -105,10 +105,19 @@ def videoCount(request, pk):
         return HttpResponse(status=200)
 
 def getRelatedVideos(request):
-	u = request.user
-	brelated = BeakerRating.objects.filter(rater = u).filter(rating__in=[4, 5]).values_list('video', flat=True)
-	srelated = StarRating.objects.filter(rater = u).filter(rating__in=[4, 5])
-	related = Video.objects.filter(pk__in=set(brelated)) | Video.objects.filter(pk__in=set(srelated))
+	related = None
+	results = Video.objects.filter(block=None)
+	if request.user.is_authenticated():
+		u = request.user
+		bliked = BeakerRating.objects.filter(rater = u).filter(rating__in=[4, 5]).values_list('video', flat=True)
+		sliked = StarRating.objects.filter(rater = u).filter(rating__in=[4, 5])
+		liked = Video.objects.filter(pk__in=set(bliked)) | Video.objects.filter(pk__in=set(sliked))
+		keywords = liked.values_list('keywords', flat=True)
+		for key in keywords:
+			if related is None:
+				related = results.filter(keywords__keyword=key)
+			else:
+				related = related | results.filter(keywords__keyword=key)
 	return related
 
 def searchResult(request):
@@ -125,15 +134,26 @@ def searchResult(request):
 			else:
 				r = r | results.filter(keywords__keyword=query)
 		relevant = getRelatedVideos(request)
-		related = relevant & r
-		results1 = related.annotate(matches=Count('keywords')).order_by('-matches')
+		if relevant:
+			related = relevant & r
+			results1 = related.annotate(matches=Count('keywords')).order_by('-matches')
+		else: 
+			related = None
+			results1 = None
+		
 		if relevant:
 			unrelated = r.exclude(relevant)
 		else:
 			unrelated = r
 		results2 = unrelated.annotate(matches=Count('keywords')).order_by('-matches')
-		results = results1 | results2
-
+		if results1 and results2:
+			results = results1 | results2
+		elif results1:
+			results = results1
+		elif results2:
+			results = results2
+		else:
+			results = None
 	if 'jquery' in request.GET and request.GET['jquery']:
                 context['jquery'] = request.GET['jquery']
 		results = results.filter(journal__name=request.GET['jquery'])
