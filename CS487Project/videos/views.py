@@ -29,14 +29,14 @@ class IndexView(generic.ListView):
 
         def get_queryset(self, **kwargs):
 		allvids = super(IndexView, self).get_queryset(**kwargs).filter(block=None)
-		related = getRelatedVideos(self.request)
-		unrelated = allvids.exclude(related)
-		if related and unrelated:
-			sort = related | unrelated
-		elif related:
-			sort = related
-		elif unrelated:
-			sort = unrelated
+		related = getRelatedVideos(self.request).distinct()
+
+		if related:
+			unrelated = allvids.exclude(related)
+			if unrelated:
+				sort = related | unrelated
+			else:
+				sort = related
 		else:
 			sort = allvids
 		return sort
