@@ -38,10 +38,12 @@ class Comment(models.Model):
         commenter = models.ForeignKey(User)
         replies = models.ManyToManyField('self', related_name='', blank=True)
         content = models.TextField()
+        block = models.OneToOneField(Blocked)
 
         def __unicode__(self):
                 return "%s %s %s" % (self.commenter, self.video, self.content)
 
+            
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
@@ -136,5 +138,10 @@ class View(models.Model):
 
 class VideoView(View):
         video = models.ForeignKey(Video, related_name='user_views')
+
+class CommentVideo(Comment):
+        video = models.ForeignKey(Video)
+        class Meta:
+            abstract = True
 
 admin.site.register(Comment)
