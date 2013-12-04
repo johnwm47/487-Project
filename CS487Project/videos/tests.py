@@ -43,6 +43,50 @@ class UploadTest(TestCase):
                 self.assertEqual(o.viewCount, 0)
                 self.assertEqual(o.journal, Journal.objects.get(pk=1))
 
+class EditTest(TestCase):
+    fixtures = ['test_data.json']
+
+    def testNotAuthorized(self):
+        self.assertTrue(self.client.login(username='nu', password='nu'))
+        r = self.client.get('/videos/1/edit')
+        self.assertEqual(r.status_code, 403)
+
+    def testAdmin(self):
+        self.assertTrue(self.client.login(username='admin', password='admin'))
+        r = self.client.get('/videos/1/edit')
+        self.assertEqual(r.status_code, 200)
+
+    def testUploader(self):
+        self.assertTrue(self.client.login(username='up', password='up'))
+        r = self.client.get('/videos/1/edit')
+        self.assertEqual(r.status_code, 200)
+
+    def testChange(self):
+        v = Video.objects.get(pk=1)
+        self.assertTrue(self.client.login(username="admin", password="admin"))
+        r = self.client.post(v.get_absolute_url(), {'title': 'Changed title'})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(Video.objects.get(pk=1).title, 'Changed title')
+
+class RatingTest(TestCase):
+    fixtures = ['test_data.json']
+
+    def testNotAuthorized(self):
+        r = self.client.get('/videos/1/rate/star')
+        self.assertequal(r.status_code, 403)
+
+    def testAuthorized(self):
+        self.assertTrue(self.client.login(username='nu', password='nu'))
+        r = self.client.get('/videos/1/rating/star')
+        self.assertEqual(r.status_code, 200)
+
+    def testSubmit(self):
+        self.assertTrue(self.client.login(username='nu', password='nu'))
+        v = Video.objects.get(pk=1)
+        r = self.client.post("%s/rating/star" % v.get_absolute_url(), {'rating': '1'})
+
+        self.assertEqual(v.star.get(rater=User.objects.get(username='nu')).rating, 1)
+
 # tests the search pages
 # if this fails, check videos.views.searchResult, videos/templates/videos/search.html
 class SearchTest(TestCase):

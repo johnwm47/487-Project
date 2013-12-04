@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.dispatch import receiver
 import datetime
 from time import strftime
 from django.contrib import admin
+import os
 
 class Blocked(models.Model):
         reason = models.TextField(unique=True)
@@ -64,6 +66,27 @@ class Video(models.Model):
         
         def get_absolute_url(self):
             return reverse('videos:view', args=(self.id,))
+
+@receiver(models.signals.pre_save, sender=Video)
+def fileCleanup(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+
+    try:
+        old = Video.objects.get(pk=instance.pk).video
+    except Video.DoesNotExist:
+        return False
+
+    new = instance.video
+    if not old == new:
+        if os.path.isfile(old.path):
+            os.remove(old.path)
+
+@receiver(models.signals.post_delete, sender=Video)
+def fileCleanupOnDelete(sender, instance, **kwargs):
+    if instance.video:
+        if os.path.isfile(instance.video.path):
+            os.remove(instance.video.path)
 
 class Rating(models.Model):
         rater = models.ForeignKey(User)
