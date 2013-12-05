@@ -125,7 +125,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-	'django.contrib.comments', # testing comments
+	#'django.contrib.comments', # testing comments
+	'my_comment_app',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
