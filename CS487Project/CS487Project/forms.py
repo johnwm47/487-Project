@@ -14,6 +14,8 @@ class UserCreateForm(UserCreationForm):
                 user.email = self.cleaned_data["email"]
                 if commit:
                         user.save()
+                        Group.objects.get(name='viewer').user_set.add(user)
+
                         if user.email[-4:] == '.edu':
                                 Group.objects.get(name='uploaders').user_set.add(user)
                 return user
