@@ -12,8 +12,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
 import my_comment_app
-from django_comments import signals
-from django_comments.views.utils import next_redirect, confirmation_view
+from my_comment_app import signals
+from my_comment_app.views.utils import next_redirect, confirmation_view
 
 class CommentPostBadRequest(http.HttpResponseBadRequest):
     """
