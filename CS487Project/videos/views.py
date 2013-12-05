@@ -29,9 +29,8 @@ class IndexView(generic.ListView):
 
         def get_queryset(self, **kwargs):
 		allvids = super(IndexView, self).get_queryset(**kwargs).filter(block=None)
-		print type(allvids)
 		related = getRelatedVideos(self.request).distinct()
-
+		unrelated = None
 		if related:
 			unrelated = allvids.exclude(related)
 			if unrelated:
