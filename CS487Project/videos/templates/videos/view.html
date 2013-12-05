@@ -45,13 +45,7 @@ Your browser does not support the video tag.
 
 <div class="right">
 
-{% if perms.add_comment %}
-<form method="post" action="{% url 'videos:createComment' video.id 'comment' %}" target="_blank">
-        {% csrf_token %}
-        {{ comment }}
-        <input type="submit" value="Submit" />
-</form>
-{% endif %}
+
 
 {% if perms.add_rating %}
 <form method="post" action="{% url 'videos:createRating' video.id 'star' %}" target="_blank">

@@ -62,11 +62,11 @@ class ViewVideo(generic.DetailView):
                     beaker = self.object.beakers.get(rater=self.request.user)
                 except ObjectDoesNotExist:
                     beaker = None
-            if self.request.user.is_authenticated() and self.request.user.has_perm('videos.add_comment'):
-                try:
-                    comment = self.object.replies.get(commenter=self.request.user)
-                except ObjectDoesNotExist:
-                    comment = None   
+            #if self.request.user.is_authenticated() and self.request.user.has_perm('videos.add_comment'):
+                #try:
+                    #comment = self.object.replies.get(commenter=self.request.user)
+                #except ObjectDoesNotExist:
+                    #comment = None   
             else:
                 star = None
                 beaker = None
@@ -74,7 +74,7 @@ class ViewVideo(generic.DetailView):
 
             context['star'] = StarRatingForm(instance=star)
             context['beaker'] = BeakerRatingForm(instance=beaker)
-            context['comment'] = LeaveCommentForm(instance=comment)
+            #context['comment'] = LeaveCommentForm(instance=comment)
 
             context['star_avg'] = self.object.stars.aggregate(Avg('rating'))['rating__avg']
             context['beaker_avg'] = self.object.beakers.aggregate(Avg('rating'))['rating__avg']

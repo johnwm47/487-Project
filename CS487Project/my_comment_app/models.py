@@ -51,8 +51,8 @@ class Comment(BaseCommentAbstractModel):
     # Who posted this comment? If ``user`` is set then it was an authenticated
     # user; otherwise at least user_name should have been set and the comment
     # was posted by a non-authenticated user.
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
-                 blank=True, null=True, related_name="%(class)s_comments2")
+    #user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
+                # blank=True, null=True, related_name="%(class)s_comments2")
     user_name = models.CharField(_("user's name"), max_length=50, blank=True)
     #user_email = models.EmailField(_("user's email address"), blank=True)
     #user_url = models.URLField(_("user's URL"), blank=True)
@@ -81,41 +81,14 @@ class Comment(BaseCommentAbstractModel):
         verbose_name_plural = _('comments')
 
     def __str__(self):
-        return "%s: %s..." % (self.name, self.comment[:50])
+        return "%s" % (self.comment[:50])
 
     def save(self, *args, **kwargs):
         if self.submit_date is None:
             self.submit_date = timezone.now()
         super(Comment, self).save(*args, **kwargs)
 
-    def _get_userinfo(self):
-        """
-        Get a dictionary that pulls together information about the poster
-        safely for both authenticated and non-authenticated comments.
-
-        This dict will have ``name``, ``email``, and ``url`` fields.
-        """
-        if not hasattr(self, "_userinfo"):
-            userinfo = {
-                "name": self.user_name,
-                "email": self.user_email,
-                "url": self.user_url
-            }
-            if self.user_id:
-                u = self.user
-                if u.email:
-                    userinfo["email"] = u.email
-
-                # If the user has a full name, use that for the user name.
-                # However, a given user_name overrides the raw user.username,
-                # so only use that if this comment has no associated name.
-                if u.get_full_name():
-                    userinfo["name"] = self.user.get_full_name()
-                elif not self.user_name:
-                    userinfo["name"] = u.get_username()
-            self._userinfo = userinfo
-        return self._userinfo
-    userinfo = property(_get_userinfo, doc=_get_userinfo.__doc__)
+   
 
     def _get_name(self):
         return self.userinfo["name"]
