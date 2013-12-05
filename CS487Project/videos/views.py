@@ -14,6 +14,8 @@ from forms import *
 import string
 import re
 import datetime
+from my_comment_app.models import Comment
+
 
 def getVideo(pk):
         video = get_object_or_404(Video, pk=pk)
@@ -21,7 +23,14 @@ def getVideo(pk):
             raise Http404
         else:
             return video
-
+		
+def getComment(pk):
+		comment = get_object_or_404(Comment, pk=pk)
+		if not comment.block == None:
+			raise Http404
+		else:
+			return comment
+			
 # Create your views here.
 class IndexView(generic.ListView):
         template_name = 'videos/index.html'
@@ -233,7 +242,7 @@ def createVideoFlag(request, pk):
 
 @permission_required('videos.add_commentflag', raise_exception=True)
 def createCommentFlag(request, pk):
-    obj = getVideo(pk)
+    obj = getComment(pk)
     if request.method == 'POST':
         form = FlagCommentForm(request.POST)
         if form.is_valid():
@@ -243,5 +252,5 @@ def createCommentFlag(request, pk):
             f.save()
             return render(request, 'flag/flag_success.html')
     else:
-        form = FlagCreationForm()
+        form = FlagCommentForm()
     return render_to_response('flag/leave_flag.html', {'form': form, 'pk': pk}, context_instance=RequestContext(request))

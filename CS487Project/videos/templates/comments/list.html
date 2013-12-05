@@ -1,11 +1,15 @@
 <dl id="comments">
   {% for comment in comment_list %}
+	{% if comment.block == None %}
     <dt id="c{{ comment.id }}">
-        {{ comment.submit_date }} - {{ comment.name }}
+        {{ comment.submit_date }} - {{ comment.user }}
     </dt>
     <dd>
         <p>{{ comment.comment }}</p>
-		<a href="/videos/">Flag</a>			#Need to change this to link for flag of comment by comment id
+		{% if perms.add_flag %}
+		<a href="{% url 'videos:flagComment' comment.pk %}">Flag This Comment</a>
+		{% endif %}
     </dd>
+	{% endif %}
   {% endfor %}
 </dl>

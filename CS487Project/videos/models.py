@@ -7,6 +7,8 @@ from time import strftime
 from django.contrib import admin
 import os
 
+from my_comment_app.models import Comment
+
 class Blocked(models.Model):
         reason = models.TextField(unique=True)
 
@@ -34,16 +36,6 @@ class Journal(models.Model):
         def __unicode__(self):
                 return "%s %s %s" % (self.name, self.year, self.edition)
 
-class Comment(models.Model):
-        commenter = models.ForeignKey(User)
-        replies = models.ManyToManyField('self', related_name='', blank=True)
-        content = models.TextField()
-        block = models.OneToOneField(Blocked)
-
-        def __unicode__(self):
-                return "%s %s %s" % (self.commenter, self.video, self.content)
-
-            
 # instance: the model instance. In this case a Video object. The primary key probably
 # will not have been initialized yet, so instance.id cannot be assumed to exist.
 def filePath(instance, filename):
@@ -60,7 +52,6 @@ class Video(models.Model):
         keywords = models.ManyToManyField(Keyword, blank=True)
         journal = models.ForeignKey(Journal)
         video = models.FileField(upload_to=filePath)
-        replies = models.ManyToManyField(Comment, related_name='', blank=True)
         block = models.ForeignKey(Blocked, related_name='', blank=True, null=True, default=None, on_delete=models.SET_NULL)
 
         def __unicode__(self):
