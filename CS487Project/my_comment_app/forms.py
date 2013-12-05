@@ -183,9 +183,7 @@ class CommentDetailsForm(CommentSecurityForm):
         return comment
 
 class CommentForm(CommentDetailsForm):
-    honeypot      = forms.CharField(required=False,
-                                    label=_('If you enter anything in this field '\
-                                            'your comment will be treated as spam'))
+    
 
     def clean_honeypot(self):
         """Check that nothing's been entered into the honeypot."""
