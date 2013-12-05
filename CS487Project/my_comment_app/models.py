@@ -51,9 +51,10 @@ class Comment(BaseCommentAbstractModel):
     # Who posted this comment? If ``user`` is set then it was an authenticated
     # user; otherwise at least user_name should have been set and the comment
     # was posted by a non-authenticated user.
-    #user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
-                # blank=True, null=True, related_name="%(class)s_comments2")
-    user_name = models.CharField(_("user's name"), max_length=50, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
+                 blank=True, null=True, related_name="%(class)s_comments2")
+    block = models.ForeignKey('videos.Blocked', related_name='', blank=True, null=True, default=None, on_delete=models.SET_NULL)
+	
     #user_email = models.EmailField(_("user's email address"), blank=True)
     #user_url = models.URLField(_("user's URL"), blank=True)
 

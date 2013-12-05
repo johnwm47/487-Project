@@ -82,11 +82,6 @@ class FlagVideoForm(ModelForm):
         model = FlagVideo
         fields = ('description', )
 
-class LeaveCommentForm(ModelForm):
-    class Meta:
-        model = Comment
-        fields = ('content', )
-
 class BeakerRatingForm(ModelForm):
     class Meta:
         model = BeakerRating
