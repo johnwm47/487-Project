@@ -6,8 +6,8 @@
     </dt>
     <dd>
         <p>{{ comment.comment }}</p>
-		{% if perms.add_flag %}
-		<a href="{% url 'videos:flagComment' comment.pk %}">Flag This Comment</a>
+		{% if user.is_authenticated %}
+		<a href="{% url 'videos:flagComment' comment.pk %}" target="_BLANK">Flag This Comment</a>
 		{% endif %}
     </dd>
 	{% endif %}

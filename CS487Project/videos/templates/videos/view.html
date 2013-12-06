@@ -19,6 +19,39 @@
 Your browser does not support the video tag.
 </video>
 </p>
+
+<div class="right">
+
+
+        {% comment %} {% if perms.videos.add_starrating %} {% endcomment %}
+        {% if user.is_authenticated %}
+<form method="post" action="{% url 'videos:createRating' video.id 'star' %}" target="_blank">
+        {% csrf_token %}
+        {{ star }}
+        <input type="submit" value="Submit" />
+</form>
+{% endif %}
+
+Average stars: {{ star_avg }}
+<br />
+{% comment %}{% if perms.videos.add_beakerRating %}{% endcomment %}
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'videos:createRating' video.id 'beaker' %}" target="_blank">
+        {% csrf_token %}
+        {{ beaker }}
+        <input type="submit" value="Submit" />
+</form>
+{% endif %}
+
+Average beakers: {{ beaker_avg }}
+
+{% comment %}{% if perms.videos.add_videoflag %}{% endcomment %}
+{% if user.is_authenticated %}
+<br />
+<a href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>
+{% endif %}
+</div>
+
 {% render_comment_list for video %}
 <div>
         {% if user.is_authenticated %}
@@ -41,78 +74,13 @@ Your browser does not support the video tag.
         {% endif %}
         </div>
 
-<div class="right">
-
-
-
-{% if perms.add_rating %}
-<form method="post" action="{% url 'videos:createRating' video.id 'star' %}" target="_blank">
-        {% csrf_token %}
-        {{ star }}
-        <input type="submit" value="Submit" />
-</form>
-{% endif %}
-
-Average stars: {{ star_avg }}
-
-{% if perms.add_rating %}
-<form method="post" action="{% url 'videos:createRating' video.id 'beaker' %}" target="_blank">
-        {% csrf_token %}
-        {{ beaker }}
-        <input type="submit" value="Submit" />
-</form>
-{% endif %}
-
-Average beakers: {{ beaker_avg }}
-
-{% if perms.add_flag %}
-<br />
-<a href="{% url 'videos:flagVideo' video.id %}" target="_blank">Flag this video</a>
-{% endif %}
-</div>
-
 <p>{{ video.description }}</p>
 <p>Viewed {{ video.viewCount }} times.</p>
 <p>Original article: <a href="{{ video.url }}" target="_blank">{{ video.url }}</a></p>
 <p>Authors: {{ video.authors.all|join:", " }}</p>
 <p>Keywords: {{ video.keywords.all|join:", " }}</p>
 <p>Journal: {{ video.journal }}</p>
-<!--
-<form name="input_1" action="html_form_action.asp" method="get">
-<textarea row="20" cols="60">
-please type in your comments.
-</textarea>
-<input type="submit" value="Submit">
-</form>
-<form name="input_2" action="html_form_action.asp" method="get">
-<p>Please rank the video</p><select name="rank">
-<option value="One Star">One Star</option>
-<option value="Two Stars">Two Stars</option>
-<option value="Three Stars" selected>Three Stars</option>
-<option value="Four Stars">Four Stars</option>
-<option value="Five Stars">Five Stars</option>
-</select>
-<input type="submit" value="Submit">
-</form>
 
-<div id="content" style="background-color:#EEEEEE;height:400px;width:800px;margin:0 auto;">
-<h4 style="text-align:center;margin-bottom:1">All Comments</h4>
-<p>name1 rankings1</p>
-<p>comments1</p>
-
-<p>name2 rankings2</p>
-<p>comments2</p>
-
-<p>name3 rankings3</p>
-<p>comments3</p>
-
-
-<address>
-<a href="mailto:da000@gmail.com">Email us: jyz@hawk.iit.edu</a><br>
-Address:S.State Street, 60616<br>
-Phone: +312 666 9999
-</address>
-</div>-->
 <script type="text/javascript">
 function makeView() {
         var r = new XMLHttpRequest();

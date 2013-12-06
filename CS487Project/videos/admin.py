@@ -76,8 +76,8 @@ class FlagVideoAdmin(FlagAdmin):
         video_link.short_description = 'Video'
 
 class FlagCommentAdmin(FlagAdmin):
-        readonly_fields = ['user_link', 'comment_link']
-        fields = ['resolved', 'user_link', 'comment_link', 'description']
+        readonly_fields = ['user_link']
+        fields = ['resolved', 'user_link', 'description']
 
         def comment_link(self, obj):
             change_url = urlresolvers.reverse('admin:videos_comment_change', args=(obj.comment.pk,))
